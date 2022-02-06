@@ -1,2 +1,2 @@
 # Learning_Code_Practice
-Code practice for concept studied from various sources
+Code practice for concept studied from various sources like books, conference talks, youtube videos ...
