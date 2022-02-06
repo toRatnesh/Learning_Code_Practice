@@ -1,0 +1,32 @@
+// case 01 | write to file stream directly
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ g++ -Wall -Wpedantic -g -std=c++14 -o stream_vs_file_write stream_vs_file_write.cpp
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ time ./stream_vs_file_write
+
+real    0m3.616s
+user    0m0.492s
+sys     0m3.120s
+
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ g++ -Wall -Wpedantic -g -std=c++14 -O3 -o stream_vs_file_write stream_vs_file_write.cpp
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ time ./stream_vs_file_write
+
+real    0m3.609s
+user    0m0.448s
+sys     0m3.157s
+
+
+// case 02 | write to file stream using string stream
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ g++ -Wall -Wpedantic -g -std=c++14 -o stream_vs_file_write stream_vs_file_write.cpp
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ time ./stream_vs_file_write
+
+real    0m1.415s
+user    0m1.313s
+sys     0m0.101s
+
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ g++ -Wall -Wpedantic -g -std=c++14 -O3 -o stream_vs_file_write stream_vs_file_write.cpp
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ time ./stream_vs_file_write
+
+real    0m1.229s
+user    0m1.103s
+sys     0m0.100s
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$
+

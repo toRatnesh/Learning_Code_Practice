@@ -1,0 +1,46 @@
+// case - 01 | osf << msg << std::endl;
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ g++ -Wall -Wpedantic -g -std=c++14 -o stop_using_endl stop_using_endl.cpp
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ time ./stop_using_endl
+
+real    0m4.160s
+user    0m0.799s
+sys     0m3.355s
+
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ g++ -Wall -Wpedantic -g -std=c++14 -O3 -o stop_using_endl stop_using_endl.cpp
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ time ./stop_using_endl
+
+real    0m3.755s
+user    0m0.705s
+sys     0m3.045s
+
+// case - 02 | //osf << msg << "\n";
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ g++ -Wall -Wpedantic -g -std=c++14 -o stop_using_endl stop_using_endl.cpp
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ time ./stop_using_endl
+
+real    0m0.300s
+user    0m0.253s
+sys     0m0.047s
+
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ g++ -Wall -Wpedantic -g -std=c++14 -O3 -o stop_using_endl stop_using_endl.cpp
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ time ./stop_using_endl
+
+real    0m0.298s
+user    0m0.234s
+sys     0m0.063s
+
+// case - 03 | //osf << msg << '\n'; 
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ g++ -Wall -Wpedantic -g -std=c++14 -o stop_using_endl stop_using_endl.cpp
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ time ./stop_using_endl
+
+real    0m0.319s
+user    0m0.270s
+sys     0m0.049s
+
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ g++ -Wall -Wpedantic -g -std=c++14 -O3 -o stop_using_endl stop_using_endl.cpp
+[ratnesh1.tiwari@localhost ep07_stop_using_endl]$ time ./stop_using_endl
+
+real    0m0.246s
+user    0m0.188s
+sys     0m0.057s
+
+
