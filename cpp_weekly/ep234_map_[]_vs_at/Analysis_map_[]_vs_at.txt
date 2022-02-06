@@ -1,0 +1,28 @@
+
+=== BINARY SIZES IN DIFFERENT CASES ===
+
+=======================================
+Compiler used:
+gcc version 7.3.1 20180303 (Red Hat 7.3.1-5) (GCC)
+=======================================
+CONCLUSION:
+at() is fatsre than [] becuse it doing less work, it is never used to insert the value.
+Since at() doing less work it generates less code than [].
+=======================================
+
+// CASE - 01
+std::cout << "Key: " << it->first << " Value: " << it->second << '\n';
+-rwxrwxr-x 1 ratnesh1.tiwari ratnesh1.tiwari 178640 Aug 28 15:55 MapMemberAccess
+
+// CASE - 02
+std::cout << "Key: " << it->first << " Value: " << l_map.at(it->first) << '\n';
+-rwxrwxr-x 1 ratnesh1.tiwari ratnesh1.tiwari 180472 Aug 28 15:55 MapMemberAccess
+
+
+// CASE - 03
+std::cout << "Key: " << it->first << " Value: " << l_map[it->first] << '\n';
+-rwxrwxr-x 1 ratnesh1.tiwari ratnesh1.tiwari 198136 Aug 28 15:56 MapMemberAccess
+
+
+
+
