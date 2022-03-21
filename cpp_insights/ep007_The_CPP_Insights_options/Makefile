@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++17
-TARGET  = noexcept
-SRC     = noexcept.cpp
+TARGET  = cpp_insights_options
+SRC     = cpp_insights_options.cpp
 
 ALL : $(TARGET)
 

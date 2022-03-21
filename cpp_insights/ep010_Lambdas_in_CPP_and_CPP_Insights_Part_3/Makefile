@@ -1,7 +1,6 @@
 CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++17
-TARGET  = noexcept
-SRC     = noexcept.cpp
-
+TARGET  = constexpr_lambda
+SRC     = constexpr_lambda.cpp
 ALL : $(TARGET)
 
 $(TARGET): $(SRC)

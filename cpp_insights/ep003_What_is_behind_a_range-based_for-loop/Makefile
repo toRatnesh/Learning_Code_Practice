@@ -1,6 +1,6 @@
-CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++17
-TARGET  = noexcept
-SRC     = noexcept.cpp
+CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++20
+TARGET  = range_based_for_loop
+SRC     = range_based_for_loop.cpp
 
 ALL : $(TARGET)
 

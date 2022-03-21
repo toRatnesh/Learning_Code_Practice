@@ -1,6 +1,6 @@
-CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++17
-TARGET  = noexcept
-SRC     = noexcept.cpp
+CC      = g++ -Wall -Wextra  -Wpedantic   -Wconversion -g -std=c++11
+TARGET  = stl_diff
+SRC     = stl_diff.cpp
 
 ALL : $(TARGET)
 

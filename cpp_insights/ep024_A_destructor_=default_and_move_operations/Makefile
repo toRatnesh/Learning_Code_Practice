@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++17
-TARGET  = noexcept
-SRC     = noexcept.cpp
+TARGET  = default_destructor
+SRC     = default_destructor.cpp
 
 ALL : $(TARGET)
 

@@ -1,7 +1,6 @@
-CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++17
-TARGET  = noexcept
-SRC     = noexcept.cpp
-
+CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++11
+TARGET  = invisible_things
+SRC     = invisible_things.cpp
 ALL : $(TARGET)
 
 $(TARGET): $(SRC)

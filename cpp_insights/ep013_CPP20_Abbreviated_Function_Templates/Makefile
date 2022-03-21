@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++20
-TARGET  = cpp20_lambda_capture
-SRC     = cpp20_lambda_capture.cpp
+TARGET  = abbreviated_function_template
+SRC     = abbreviated_function_template.cpp
 
 ALL : $(TARGET)
 

@@ -1,6 +1,6 @@
-CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++17
-TARGET  = noexcept
-SRC     = noexcept.cpp
+CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++11
+TARGET  = auto-type_deduction
+SRC     = auto-type_deduction.cpp
 
 ALL : $(TARGET)
 

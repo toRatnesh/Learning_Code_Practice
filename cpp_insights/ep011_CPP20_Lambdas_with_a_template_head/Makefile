@@ -1,6 +1,6 @@
-CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++17
-TARGET  = noexcept
-SRC     = noexcept.cpp
+CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++20
+TARGET  = template_lambda
+SRC     = template_lambda.cpp
 
 ALL : $(TARGET)
 
