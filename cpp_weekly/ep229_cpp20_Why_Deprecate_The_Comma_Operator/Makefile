@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++20
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++20
 TARGET  = deprecate_The_Comma_Operator
 SRC     = deprecate_The_Comma_Operator.cpp
 

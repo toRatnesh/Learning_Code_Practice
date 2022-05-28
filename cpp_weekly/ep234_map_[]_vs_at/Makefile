@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wpedantic -g -std=c++14
+CC      = g++ -Wall -Wpedantic -Wconversion  -g -std=c++14
 TARGET  = MapMemberAccess
 SRC     = *.cpp
 

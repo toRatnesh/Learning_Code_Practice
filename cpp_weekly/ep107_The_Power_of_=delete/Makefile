@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++17
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++17
 TARGET  = power_of_delete
 SRC     = power_of_delete.cpp
 

@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++14
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++14
 TARGET  = avoid_const_cast
 SRC     = avoid_const_cast.cpp
 

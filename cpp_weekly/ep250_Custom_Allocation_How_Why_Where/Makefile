@@ -1,0 +1,16 @@
+CC      = g++ -Wall -Wpedantic -Wconversion  -g -std=c++20
+TARGET  = custom_alloc
+SRC     = custom_alloc.cpp
+
+ALL : $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CC) -o $(TARGET) $(SRC)
+
+.PHONY: clean
+clean:
+	rm -f $(TARGET)
+
+.PHONY: run
+run:
+	./$(TARGET)

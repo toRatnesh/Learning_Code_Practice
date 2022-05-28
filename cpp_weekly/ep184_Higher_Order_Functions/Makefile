@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++17
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++17
 TARGET  = higher_order_functions
 SRC     = higher_order_functions.cpp
 

@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++17
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++17
 TARGET  = performance_using_auto
 SRC     = performance_using_auto.cpp
 

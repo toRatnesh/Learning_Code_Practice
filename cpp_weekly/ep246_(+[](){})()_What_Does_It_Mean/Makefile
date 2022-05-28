@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wpedantic -g -std=c++11
+CC      = g++ -Wall -Wpedantic -Wconversion  -g -std=c++11
 TARGET  = lambda_to_functionPointer_cast
 SRC     = lambda_to_functionPointer_cast.cpp
 

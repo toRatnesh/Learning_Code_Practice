@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -Wshadow -g -std=c++98
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -Wshadow -g -std=c++98
 TARGET  = variable_shadowing
 SRC     = variable_shadowing.cpp
 

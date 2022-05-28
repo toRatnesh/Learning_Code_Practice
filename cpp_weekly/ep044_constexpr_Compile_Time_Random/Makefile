@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++17 
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++17 
 TARGET  = constexpr_Compile_Time_Random
 SRC     = constexpr_Compile_Time_Random.cpp
 

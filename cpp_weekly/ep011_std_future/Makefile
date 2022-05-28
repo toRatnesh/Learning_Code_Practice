@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra  -Wpedantic  -g -std=c++11 -lpthread
+CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion   -g -std=c++11 -lpthread
 TARGET  = AsyncFuture
 SRC     = AsyncFuture.cpp
 

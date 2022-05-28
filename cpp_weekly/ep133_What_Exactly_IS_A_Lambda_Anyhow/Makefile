@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++17
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++17
 TARGET  = what_is_lambda
 SRC     = what_is_lambda.cpp
 

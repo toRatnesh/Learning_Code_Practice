@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++20
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++20
 TARGET  = starts_with_and_ends_with
 SRC     = starts_with_and_ends_with.cpp
 

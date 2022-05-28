@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++17 
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++17 
 TARGET  = Compile_Time_Maze_Generator
 SRC     = Compile_Time_Maze_Generator.cpp
 

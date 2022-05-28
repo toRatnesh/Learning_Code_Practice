@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++11 
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++11 
 TARGET  = overloaded_and_or
 SRC     = overloaded_and_or.cpp
 

@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wpedantic -g -std=c++20
+CC      = g++ -Wall -Wpedantic -Wconversion  -g -std=c++20
 TARGET  = Mutable_Lambda
 SRC     = Mutable_Lambda.cpp
 

@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++20
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++20
 TARGET  = lambda_in_cpp20
 SRC     = lambda_in_cpp20.cpp
 

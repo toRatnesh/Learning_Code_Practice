@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++17
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++17
 TARGET  = cannot_move_const
 SRC     = cannot_move_const.cpp
 

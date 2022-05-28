@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wpedantic -g -std=c++20
+CC      = g++ -Wall -Wpedantic -Wconversion  -g -std=c++20
 TARGET  = type_not_be_named
 SRC     = type_not_be_named.cpp
 

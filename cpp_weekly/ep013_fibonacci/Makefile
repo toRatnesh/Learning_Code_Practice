@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wpedantic -Wextra -g -std=c++11
+CC      = g++ -Wall -Wpedantic -Wconversion  -Wextra -g -std=c++11
 TARGET  = fibonacci
 SRC     = fibonacci.cpp
 

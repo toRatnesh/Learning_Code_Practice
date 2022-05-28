@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++23
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++23
 TARGET  = if_consteval
 SRC     = if_consteval.cpp
 

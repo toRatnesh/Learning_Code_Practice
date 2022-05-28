@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++11
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++11
 TARGET  = operator_overloading
 SRC     = operator_overloading.cpp
 

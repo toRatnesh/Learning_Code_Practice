@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++11 -O3
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++11 -O3
 TARGET  = attributes
 SRC     = attributes.cpp
 

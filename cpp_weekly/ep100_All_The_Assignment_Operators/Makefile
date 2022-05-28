@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++11
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++11
 TARGET  = assignment_operators
 SRC     = assignment_operators.cpp
 

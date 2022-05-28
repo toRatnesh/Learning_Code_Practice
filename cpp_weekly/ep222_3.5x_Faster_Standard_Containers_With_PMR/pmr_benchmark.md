@@ -42,17 +42,5 @@ static void pmr_vec_buf(benchmark::State& state) {
 }
 BENCHMARK(pmr_vec_buf);
 
-
-}
-}
-}
-}
-}
-}
-
-
-
-
 #   END OF FILE
-
 

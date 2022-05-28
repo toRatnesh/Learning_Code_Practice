@@ -1,4 +1,4 @@
-CC      = gcc -Wall -Wextra -Wpedantic -g
+CC      = gcc -Wall -Wextra -Wpedantic -Wconversion  -g
 TARGET  = c_overload
 SRC     = c_overload.c
 

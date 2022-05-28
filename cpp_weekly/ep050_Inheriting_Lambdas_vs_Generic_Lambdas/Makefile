@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++17
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++17
 TARGET  = Inheriting_Lambdas_vs_Generic_Lambdas
 SRC     = Inheriting_Lambdas_vs_Generic_Lambdas.cpp
 

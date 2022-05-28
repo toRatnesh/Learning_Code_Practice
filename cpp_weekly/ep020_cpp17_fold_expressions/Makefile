@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wpedantic -g -std=c++17
+CC      = g++ -Wall -Wpedantic -Wconversion  -g -std=c++17
 TARGET  = FoldExpressions
 SRC     = FoldExpressions.cpp
 

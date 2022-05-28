@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++23
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++23
 TARGET  = lambda_with_optional_paramlist
 SRC     = lambda_with_optional_paramlist.cpp
 

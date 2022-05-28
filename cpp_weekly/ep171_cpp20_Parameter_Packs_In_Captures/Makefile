@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++20
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++20
 TARGET  = parameter_pack_in_lambda_capture
 SRC     = parameter_pack_in_lambda_capture.cpp
 

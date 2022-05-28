@@ -3,7 +3,7 @@
 
 	For more info visit:
 	https://en.cppreference.com/w/cpp/language/if#Consteval_if
-	Episode video:	https://www.youtube.com/watch?v=_xvAmEbK1vE&list=PLs3KjaCtOwSZ2tbuV1hx8Xz-rFZTan2J1&index=306
+	Episode video:	https://www.youtube.com/watch?v=AtdlMB_n2pI&list=PLs3KjaCtOwSZ2tbuV1hx8Xz-rFZTan2J1&index=305
 
 **********************/
 

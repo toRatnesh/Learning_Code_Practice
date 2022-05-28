@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++11
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++11
 TARGET  = precision_loss_with_accumulate
 SRC     = precision_loss_with_accumulate.cpp
 

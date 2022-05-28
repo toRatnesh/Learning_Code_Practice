@@ -1,0 +1,106 @@
+/***********
+  Run this using google benchamrk
+  or
+https://quick-bench.com/
+ *******/
+
+
+#include <list>
+#include <memory_resource>
+
+
+struct NewDelete {
+	std::pmr::memory_resource *get_resource() {
+		return std::pmr::new_delete_resource();
+	}
+};
+
+template<std::size_t Size>
+struct Monotonic {
+	std::pmr::monotonic_buffer_resource mem_resource{ Size };
+	std::pmr::polymorphic_allocator<> alloc{ &mem_resource };
+
+	template<typename Container>
+		auto create(const auto &dataSource) {
+			if constexpr (requires { Container{}.bucket_count(); }) {
+				return Container{ dataSource.begin(), dataSource.end(), Container{}.bucket_count(), alloc };
+			} else {
+				return Container{ dataSource.begin(), dataSource.end(), alloc };
+			}
+		}
+
+	template<typename Container>
+		auto copy(const Container &container) {
+			return Container{ container, alloc };
+		}
+
+	std::pmr::memory_resource *get_resource() {
+		return &mem_resource;
+	}
+};
+
+
+template<std::size_t Size>
+struct PoolMonotonic {
+	std::pmr::monotonic_buffer_resource upstream{ Size };
+	std::pmr::unsynchronized_pool_resource mem_resource{ &upstream };
+	std::pmr::polymorphic_allocator<> alloc{ &mem_resource };
+
+	template<typename Container>
+		auto create(const auto &dataSource) {
+			if constexpr (requires { Container{}.bucket_count(); }) {
+				return Container{ dataSource.begin(), dataSource.end(), Container{}.bucket_count(), alloc };
+			} else {
+				return Container{ dataSource.begin(), dataSource.end(), alloc };
+			}
+		}
+
+	template<typename Container>
+		auto copy(const Container &container) {
+			return Container{ container, alloc };
+		}
+
+	std::pmr::memory_resource *get_resource() {
+		return &mem_resource;
+	}
+};
+
+
+template<typename Allocator>
+static void CreateAndAccess(benchmark::State &state) {
+
+	auto worker = []() {
+		Allocator alloc;
+		std::pmr::list<int> values(alloc.get_resource());
+
+		for(int i = 0; i < 100000; ++i) {
+			values.push_back(i);
+		}
+
+		for(int i = 0; i < 1000; ++i) {
+			for(auto & value : values) {
+				++value;
+			}
+
+			values.erase(values.begin());
+			values.push_back(0);
+
+		}
+
+		return values.back();
+	}; // worker
+
+	for(auto _ : state) {
+		const auto value = worker();
+		benchmark::DoNotOptimize(value);
+	}
+}
+
+BENCHMARK_TEMPLATE(CreateAndAccess, NewDelete)->Threads(10);
+BENCHMARK_TEMPLATE(CreateAndAccess, Monotonic<10>)->Threads(10);
+BENCHMARK_TEMPLATE(CreateAndAccess, PoolMonotonic<10>)->Threads(10);
+
+
+/*****
+  END OF FILE
+ *****/

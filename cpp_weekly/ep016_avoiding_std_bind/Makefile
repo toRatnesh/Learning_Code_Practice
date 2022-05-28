@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra  -Wpedantic -g -std=c++17
+CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++17
 TARGET  = Bind_vs_Lambda
 SRC     = Bind_vs_Lambda.cpp
 

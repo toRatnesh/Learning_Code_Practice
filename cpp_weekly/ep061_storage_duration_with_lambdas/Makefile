@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++17 -lpthread
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++17 -lpthread
 TARGET  = StorageDurationWithLambda
 SRC     = StorageDurationWithLambda.cpp
 

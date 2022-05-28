@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra  -Wpedantic -g -std=c++11 -fsanitize=address -fsanitize=leak 
+CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++11 -fsanitize=address -fsanitize=leak 
 TARGET  = sanitizers
 SRC     = sanitizers.cpp
 

@@ -1,0 +1,22 @@
+{
+	"name": "rapidjson",
+	"price": 250.35,
+	"discount": 10,
+	"insale": true,
+	"operation": [
+		"read",
+		"write",
+		1,
+		1.5,
+		true,
+		{
+			"name": "json",
+			"value": 12
+		}
+	],
+	"contact": {
+		"address": "A street name",
+		"city": "A city name",
+		"pin": 274406
+	}
+}

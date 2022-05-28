@@ -1,0 +1,50 @@
+/***********
+  Run this using google benchamrk
+  or
+https://quick-bench.com/
+ *******/
+
+#include <vector>
+#include <memory_resource>
+
+static void PMRWinkOutVector(benchmark::State& state) {
+	// Code inside this loop is measured repeatedly
+	std::array<std::uint8_t, 1024> buffer{};
+	for (auto _ : state) {
+		std::pmr::monotonic_buffer_resource underlying_bytes(buffer.data(),
+															 buffer.size());
+		std::pmr::polymorphic_allocator<> alloc{&underlying_bytes};
+		auto *vec = alloc.new_object<std::pmr::vector<int>>(
+			std::initializer_list<int>{1,2,3,4,5,6});
+		benchmark::DoNotOptimize(vec);
+	}
+}
+// Register the function as a benchmark
+BENCHMARK(PMRWinkOutVector);
+
+
+static void PMRVector(benchmark::State& state) {
+	// Code inside this loop is measured repeatedly
+	std::array<std::uint8_t, 1024> buffer{};
+	for (auto _ : state) {
+		std::pmr::monotonic_buffer_resource underlying_bytes(buffer.data(),
+															 buffer.size());
+		std::pmr::vector<int> vec({1,2,3,4,5,6}, &underlying_bytes);
+		benchmark::DoNotOptimize(vec);
+	}
+}
+// Register the function as a benchmark
+BENCHMARK(PMRVector);
+
+static void Vector(benchmark::State& state) {
+	for (auto _ : state) {
+		std::vector<int> vec({1,2,3,4,5,6});
+		benchmark::DoNotOptimize(vec);
+	}
+}
+BENCHMARK(Vector);
+
+
+/******
+  END OF FILE
+ *****/

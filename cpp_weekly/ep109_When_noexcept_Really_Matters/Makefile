@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -g -std=c++14
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++14
 TARGET  = benefit_of_noexcept
 SRC     = benefit_of_noexcept.cpp
 
