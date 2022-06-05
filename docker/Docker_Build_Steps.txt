@@ -1,0 +1,29 @@
+1. Stop and remove temporary and final image
+docker stop <temp_img>
+docker rm <temp_img>
+docker stop <final_img>
+docker rm <final_img>
+docker rmi <temp_img> <final_img>
+
+2. Run temp container
+docker run -itd --privileged --name <temp_img> --network host <base_img>
+# At this stage make required changes inside container like create directories and copy files
+BaseImageContainerId=`docker container ls | grep <temp_img>  | awk {'print $1'}`
+docker commit ${BaseImageContainerId} <temp_img> 
+
+3. Change directory to APP directory and build final image
+docker build -t <final_img> .
+
+4. If you want to run the docker run it (optional)
+nohup docker run -itd --privileged --restart always --log-opt max-size=100m --log-opt max-file=3 -v /pathInsideHost/:/pathInsideContainer/ --name <final_img> --network host <final_img> &
+
+5. Save the docker
+docker save -o <pathOnHost>/<final_img>.tar <final_img>:latest
+FinalImageContainerId=`docker container ls | grep <final_img> | awk {'print $1'}`
+#echo " container ID: ${FinalImageContainerId} "
+docker commit ${FinalImageContainerId} <final_img>:latest
+
+
+
+
+

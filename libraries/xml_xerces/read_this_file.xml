@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<root xmlns:root="root namespace URI">Text_root_01
-	<Student>Text_Student_01
-		<Batch Subject = "Math" ID = "B01">Ratnesh</Batch>Text_Student_02
-		<Batch Subject = "Physics" ID = "B02">Kshitij</Batch>Text_Student_03
-	</Student>Text_root_02
-	<Others Company = "Airtel" NoOfEmployee = "15">Text_Others</Others>Text_root_03
-</root>
-
