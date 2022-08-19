@@ -17,7 +17,7 @@ consteval int get_value(int i) {
 constexpr int fun(int i) {
 
 	//if (std::is_constant_evaluated())  #although it's a compile time known constant we'r checking it at run time
-	if consteval    # actual compile time construct
+	if consteval    // actual compile time construct
 	{
 		return get_value(i);
 	}

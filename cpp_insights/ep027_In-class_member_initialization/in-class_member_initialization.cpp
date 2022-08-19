@@ -21,6 +21,7 @@ struct S2 {
 struct S3 {
 	int a = 5;
 	int b;
+  	int c:4 = 6;	// valid since c++20
 	S3() = default;
 	S3(int n) : b(n) { }
 };

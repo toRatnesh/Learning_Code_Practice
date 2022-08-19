@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++23
-TARGET  = deducing_this
-SRC     = deducing_this.cpp
+TARGET  = std_stacktrace
+SRC     = std_stacktrace.cpp
 
 ALL : $(TARGET)
 

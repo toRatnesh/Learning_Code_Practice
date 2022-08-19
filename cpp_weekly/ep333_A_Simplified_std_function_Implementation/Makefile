@@ -1,6 +1,6 @@
-CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++23
-TARGET  = deducing_this
-SRC     = deducing_this.cpp
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++17
+TARGET  = nonstd_function
+SRC     = nonstd_function.cpp
 
 ALL : $(TARGET)
 

@@ -1,6 +1,6 @@
 /*************
 
-  This example will demonstrates about template instantiation in case of vietual functions.
+  This example will demonstrates about template instantiation in case of virtual functions.
 
   Virtual function definition are always instantiated when an obbject of template class is created irrespective of the call to that virtual function takes place or not.
 

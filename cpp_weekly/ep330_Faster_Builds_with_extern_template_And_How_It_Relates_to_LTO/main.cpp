@@ -1,10 +1,10 @@
 /**************
     This example demonstrates about use of link time optimization 
-    or inter procedural optimization
+    and inter procedural optimization
 
     For more info visit:
     https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
-	Code edit: https://gcc.godbolt.org/z/E599E5scT
+	Code edit: https://gcc.godbolt.org/z/EWha5zh6W
     
 *****************/
 
