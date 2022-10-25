@@ -65,7 +65,7 @@ namespace nonstd {
         }
 }  // namespace nonstd
 
-// to Enable Read-Only Structured Bindings
+// provide a tuple-like API for class for structured bindings
 template<> struct std::tuple_size<nonstd::Student> { static constexpr int value = 3; };
 template<> struct std::tuple_element<2, nonstd::Student> { using type = uint32_t; };
 template<std::size_t Idx> struct std::tuple_element<Idx, nonstd::Student> { using type = std::string; };
