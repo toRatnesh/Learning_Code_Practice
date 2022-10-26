@@ -1,0 +1,209 @@
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ ./build_docker.sh
+Temp img name: temp_base_img
+Final img name: hello
++ echo 'Deleting if image already present '
+Deleting if image already present
++ docker stop temp_base_img hello
+temp_base_img
+Error response from daemon: No such container: hello
++ docker rm temp_base_img hello
+temp_base_img
+Error: No such container: hello
++ docker rmi temp_base_img hello
+Untagged: temp_base_img:latest
+Deleted: sha256:73229b869e23ead5c1cf4b0c0604a976b58ba1cb8e4928b03b7f69281215f1da
+Deleted: sha256:4769fd6a90425c968e0279daf7ae228e1515177a25b31b57c040419bc3849118
+Error: No such image: hello
++ sleep 1
++ docker run -itd --privileged --name temp_base_img --network host ubuntu
+197cee21fad6e2371805926b7ae926e3019127fe32d8ad3df7fadc5f42ef692c
++ echo -e 'copying all files to container \n '
+copying all files to container
+
++ docker exec -it temp_base_img mkdir -p /dockerHome
++ docker exec -it temp_base_img mkdir -p /learningDocker
++ docker exec -it temp_base_img mkdir -p /home/testDir
++ docker cp app temp_base_img:/dockerHome/
++ docker cp app/entry.sh temp_base_img:/dockerHome/entry.sh
++ docker exec -it temp_base_img chmod 755 /dockerHome/entry.sh
++ docker cp app temp_base_img:/learningDocker/
++ set -x
+++ docker container ls
+++ awk '{print $1}'
+++ grep temp_base_img
++ tempImageContainerId=197cee21fad6
++ docker commit 197cee21fad6 temp_base_img
+sha256:5406d92f6fd63b44134a3b5a6d6ecb52d1ab82f9345bc707a7c238c7d4408ff4
++ echo 'Do you want to build the docker?'
+Do you want to build the docker?
++ echo '(Press y/Y to build or other to exit)'
+(Press y/Y to build or other to exit)
++ read build_flag
+Y
++ '[' Y == y ']'
++ '[' Y == Y ']'
++ docker build -t hello .
+[+] Building 0.7s (7/7) FINISHED
+ => [internal] load build definition from Dockerfile                                                                                                                   0.0s
+ => => transferring dockerfile: 38B                                                                                                                                    0.0s
+ => [internal] load .dockerignore                                                                                                                                      0.0s
+ => => transferring context: 2B                                                                                                                                        0.0s
+ => [internal] load metadata for docker.io/library/temp_base_img:latest                                                                                                0.0s
+ => [1/3] FROM docker.io/library/temp_base_img                                                                                                                         0.0s
+ => [2/3] WORKDIR /dockerHome                                                                                                                                          0.0s
+ => [3/3] RUN ["chmod", "755", "entry.sh"]                                                                                                                             0.4s
+ => exporting to image                                                                                                                                                 0.1s
+ => => exporting layers                                                                                                                                                0.1s
+ => => writing image sha256:fe4fc4a635473448fae2ead3c5e049d46031ff9d393435d4386952a9616e7dfd                                                                           0.0s
+ => => naming to docker.io/library/hello                                                                                                                               0.0s
++ echo 'Do you want to run the docker?'
+Do you want to run the docker?
++ echo '(Press y/Y to run or other to exit)'
+(Press y/Y to run or other to exit)
++ read run_flag
+Y
++ '[' Y == y ']'
++ '[' Y == Y ']'
++ echo ' docker run , executed, '
+ docker run , executed,
++ nohup docker run -itd --privileged --restart always --log-opt max-size=100m --log-opt max-file=3 -v /etc/:/etc/ --name hello --network host hello
++ sleep 1
+nohup: appending output to 'nohup.out'
++ echo 'Do you want to save the docker?'
+Do you want to save the docker?
++ echo '(Press y/Y to save or other to exit)'
+(Press y/Y to save or other to exit)
++ read save_flag
+Y
++ '[' Y == y ']'
++ '[' Y == Y ']'
+++ docker container ls
+++ grep hello
+++ awk '{print $1}'
++ finalImageContainerId=90f71ba1416e
++ docker commit 90f71ba1416e hello:latest
+sha256:9277a872226ceeaabc84d501bad01bcaab1a4362810501046daf2f80c9ed6a69
++ docker save -o hello.tar hello:latest
++ docker stop temp_base_img hello
+temp_base_img
+hello
++ docker rm temp_base_img hello
+temp_base_img
+hello
++ docker rmi temp_base_img hello
+Untagged: temp_base_img:latest
+Deleted: sha256:5406d92f6fd63b44134a3b5a6d6ecb52d1ab82f9345bc707a7c238c7d4408ff4
+Untagged: hello:latest
+Deleted: sha256:9277a872226ceeaabc84d501bad01bcaab1a4362810501046daf2f80c9ed6a69
+Deleted: sha256:8661f6a3a80bb3ef0b6ae7e1f908e60279095cdf0470bc5e83c6e54785690e6c
+Deleted: sha256:fe4fc4a635473448fae2ead3c5e049d46031ff9d393435d4386952a9616e7dfd
++ echo -e 'docker creation completed, imageName: hello '
+docker creation completed, imageName: hello
++ set +x
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ docker images
+REPOSITORY   TAG         IMAGE ID       CREATED         SIZE
+hello        version-1   e7a70602572b   7 minutes ago   79MB
+ubuntu       latest      cdb68b455a14   36 hours ago    77.8MB
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ ll
+total 79640
+drwxr-xr-x 3 ratnesh ratnesh     4096 Oct 26 19:47 ./
+drwxr-xr-x 5 ratnesh ratnesh     4096 Oct 26 19:19 ../
+-rw-r--r-- 1 ratnesh ratnesh      243 Oct 26 19:02 Dockerfile
+drwxr-xr-x 4 ratnesh ratnesh     4096 Oct 26 19:44 app/
+-rwxr-xr-x 1 ratnesh ratnesh     2613 Oct 26 19:46 build_docker.sh*
+-rw------- 1 ratnesh ratnesh 81523200 Oct 26 19:47 hello.tar
+-rw------- 1 ratnesh ratnesh       65 Oct 26 19:47 nohup.out
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ sudo docker load -i hello.tar
+eac66eab4fa8: Loading layer [==================================================>]   2.56kB/2.56kB
+Loaded image: hello:latest
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ sudo docker images
+REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
+hello        latest    9277a872226c   3 minutes ago   79MB
+ubuntu       latest    cdb68b455a14   36 hours ago    77.8MB
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ sudo docker run -itd --name hello --network host hello &
+[1] 18948
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ f68704de4208b8f19a7c2ea70c62a2858e9b3507e8cc463c0b5c76b87784a6ab
+
+[1]+  Done                    sudo docker run -itd --name hello --network host hello
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ docker ps
+CONTAINER ID   IMAGE     COMMAND        CREATED         STATUS         PORTS     NAMES
+f68704de4208   hello     "./entry.sh"   7 seconds ago   Up 6 seconds             hello
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ docker exec -it hello bash
+root@docker-desktop:/dockerHome# ll
+total 20
+drwxr-xr-x 1 root root 4096 Oct 26 14:17 ./
+drwxr-xr-x 1 root root 4096 Oct 26 14:21 ../
+drwxr-xr-x 4 1000 1000 4096 Oct 26 14:14 app/
+-rwxr-xr-x 1 1000 1000   44 Oct 26 14:14 entry.sh*
+
+
+root@docker-desktop:/dockerHome# ./app/bin/hello
+Learning docker
+Learning docker
+^C
+
+
+root@docker-desktop:/dockerHome# exit
+exit
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ docker stop hello
+hello
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ docker rm hello
+hello
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ docker rmi hello
+Untagged: hello:latest
+Deleted: sha256:9277a872226ceeaabc84d501bad01bcaab1a4362810501046daf2f80c9ed6a69
+Deleted: sha256:8661f6a3a80bb3ef0b6ae7e1f908e60279095cdf0470bc5e83c6e54785690e6c
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ ll
+total 79640
+drwxr-xr-x 3 ratnesh ratnesh     4096 Oct 26 19:47 ./
+drwxr-xr-x 5 ratnesh ratnesh     4096 Oct 26 19:19 ../
+-rw-r--r-- 1 ratnesh ratnesh      243 Oct 26 19:02 Dockerfile
+drwxr-xr-x 4 ratnesh ratnesh     4096 Oct 26 19:44 app/
+-rwxr-xr-x 1 ratnesh ratnesh     2613 Oct 26 19:46 build_docker.sh*
+-rw------- 1 ratnesh ratnesh 81523200 Oct 26 19:47 hello.tar
+-rw------- 1 ratnesh ratnesh       65 Oct 26 19:47 nohup.out
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ rm hello.tar nohup.out
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$ ll
+total 20
+drwxr-xr-x 3 ratnesh ratnesh 4096 Oct 26 19:52 ./
+drwxr-xr-x 5 ratnesh ratnesh 4096 Oct 26 19:19 ../
+-rw-r--r-- 1 ratnesh ratnesh  243 Oct 26 19:02 Dockerfile
+drwxr-xr-x 4 ratnesh ratnesh 4096 Oct 26 19:44 app/
+-rwxr-xr-x 1 ratnesh ratnesh 2613 Oct 26 19:46 build_docker.sh*
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_another_container_as_baseimage$

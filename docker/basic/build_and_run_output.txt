@@ -1,0 +1,66 @@
+ratnesh@hp:~/Learning_Code_Practice/docker/basic$
+ratnesh@hp:~/Learning_Code_Practice/docker/basic$ sudo docker build -t hello .
+[+] Building 0.2s (9/9) FINISHED
+ => [internal] load build definition from Dockerfile                                                                                                                   0.0s
+ => => transferring dockerfile: 38B                                                                                                                                    0.0s
+ => [internal] load .dockerignore                                                                                                                                      0.0s
+ => => transferring context: 2B                                                                                                                                        0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:latest                                                                                                       0.0s
+ => [internal] load build context                                                                                                                                      0.0s
+ => => transferring context: 328B                                                                                                                                      0.0s
+ => [1/4] FROM docker.io/library/ubuntu                                                                                                                                0.0s
+ => CACHED [2/4] COPY app /app                                                                                                                                         0.0s
+ => CACHED [3/4] WORKDIR /app                                                                                                                                          0.0s
+ => CACHED [4/4] RUN ["chmod", "755", "entry.sh"]                                                                                                                      0.0s
+ => exporting to image                                                                                                                                                 0.0s
+ => => exporting layers                                                                                                                                                0.0s
+ => => writing image sha256:62ca846ff76270e0e0f546baec7412b75cff65250b1bc73c7427c0b45498a02b                                                                           0.0s
+ => => naming to docker.io/library/hello                                                                                                                               0.0s
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/basic$ docker images
+REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
+hello        latest    62ca846ff762   2 minutes ago   78.4MB
+ubuntu       latest    cdb68b455a14   36 hours ago    77.8MB
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/basic$ sudo docker run -itd --name hello --network host hello &
+[1] 17442
+ratnesh@hp:~/Learning_Code_Practice/docker/basic$ 1f9398104c4d5f5b0d756ae910ec8453d2ddb010aeb09443d56c46c9a45b2488
+
+[1]+  Done                    sudo docker run -itd --name hello --network host hello
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/basic$ docker exec -it hello bash
+
+
+root@docker-desktop:/app# ./bin/hello
+Learning docker
+Learning docker
+^C
+
+
+root@docker-desktop:/app# exit
+exit
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/basic$ docker rm hello
+Error response from daemon: You cannot remove a running container 1f9398104c4d5f5b0d756ae910ec8453d2ddb010aeb09443d56c46c9a45b2488. Stop the container before attempting removal or force remove
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/basic$ docker stop hello
+hello
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/basic$ docker rm hello
+hello
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/basic$ docker rmi hello
+Untagged: hello:latest
+Deleted: sha256:62ca846ff76270e0e0f546baec7412b75cff65250b1bc73c7427c0b45498a02b
+ratnesh@hp:~/Learning_Code_Practice/docker/basic$ docker images
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+ubuntu       latest    cdb68b455a14   36 hours ago   77.8MB
+ratnesh@hp:~/Learning_Code_Practice/docker/basic$
+ratnesh@hp:~/Learning_Code_Practice/docker/basic$

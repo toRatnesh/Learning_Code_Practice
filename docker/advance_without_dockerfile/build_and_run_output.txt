@@ -1,0 +1,133 @@
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ ./build_docker.sh
+Final img name: hello_temp
++ echo 'Deleting if image already present '
+Deleting if image already present
++ docker stop hello_temp
+Error response from daemon: No such container: hello_temp
++ docker rm hello_temp
+Error: No such container: hello_temp
++ docker rmi hello:version-1
+Untagged: hello:version-1
+Deleted: sha256:402cc010ad03b5838a0b5beca06fa2bdff206c3d14b30377a8b89baabb21a3d6
+Deleted: sha256:bbdbf1e88a8fd5a5844ab17587cb949ef6cde8509d3003a843b394709e0ce1d8
++ sleep 1
++ docker run -itd --privileged --name hello_temp --network host ubuntu
+88a9498a5df3d4593da2b77b2ea2bd0a9bb5f29e5b821976ac7f301fd0a03507
++ echo -e 'copying all files to container \n '
+copying all files to container
+
++ docker exec -it hello_temp mkdir -p /dockerHome
++ docker exec -it hello_temp mkdir -p /learningDocker
++ docker exec -it hello_temp mkdir -p /home/testDir
++ docker cp app hello_temp:/dockerHome/
++ docker cp app/entry.sh hello_temp:/dockerHome/
++ docker exec -it hello_temp chmod 755 /dockerHome/entry.sh
++ docker cp app hello_temp:/learningDocker/
++ set -x
++ sleep 1
++ echo 'Do you want to save the docker?'
+Do you want to save the docker?
++ echo '(Press Y to save or other to exit)'
+(Press Y to save or other to exit)
++ read save_flag
+Y
++ '[' Y == Y ']'
+++ docker container ls
+++ grep hello_temp
+++ awk '{print $1}'
++ tempImageContainerId=88a9498a5df3
++ docker commit -c 'WORKDIR /dockerHome' -c 'ENTRYPOINT ["./entry.sh"]' 88a9498a5df3 hello:version-1
+sha256:e7a70602572b009e325ad0009810f3fe0c04f9497f4c7e749a4a82acb22a3116
++ docker save -o hello.tar hello:version-1
++ docker stop hello_temp
+hello_temp
++ docker rm hello_temp
+hello_temp
++ docker rmi hello:version-1
+Untagged: hello:version-1
+Deleted: sha256:e7a70602572b009e325ad0009810f3fe0c04f9497f4c7e749a4a82acb22a3116
+Deleted: sha256:72b09d3a194744efa0e228b858bb302058de82f5e966ca68acd2427775cd504b
++ echo -e 'docker creation completed, imageName: hello '
+docker creation completed, imageName: hello
++ set +x
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ sudo docker images
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+ubuntu       latest    cdb68b455a14   36 hours ago   77.8MB
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ ll
+total 79616
+drwxr-xr-x 3 ratnesh ratnesh     4096 Oct 26 19:40 ./
+drwxr-xr-x 5 ratnesh ratnesh     4096 Oct 26 19:19 ../
+drwxr-xr-x 4 ratnesh ratnesh     4096 Oct 26 19:29 app/
+-rwxr-xr-x 1 ratnesh ratnesh     1890 Oct 26 19:40 build_docker.sh*
+-rw------- 1 ratnesh ratnesh 81506816 Oct 26 19:40 hello.tar
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ sudo docker load -i hello.tar
+d4811b45abc6: Loading layer [==================================================>]  1.182MB/1.182MB
+Loaded image: hello:version-1
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ sudo docker images
+REPOSITORY   TAG         IMAGE ID       CREATED          SIZE
+hello        version-1   e7a70602572b   50 seconds ago   79MB
+ubuntu       latest      cdb68b455a14   36 hours ago     77.8MB
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ sudo docker run -itd --name hello --network host hello:version-1 &
+[1] 18328
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ b3c689c57dbcfbcfacb2ab652cf4f83447c355ef2e403bdf2b8a4116e9828e94
+
+[1]+  Done                    sudo docker run -itd --name hello --network host hello:version-1
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ docker ps
+CONTAINER ID   IMAGE             COMMAND        CREATED          STATUS         PORTS     NAMES
+b3c689c57dbc   hello:version-1   "./entry.sh"   10 seconds ago   Up 9 seconds             hello
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ docker exec -it hello bash
+root@docker-desktop:/dockerHome# ll
+total 16
+drwxr-xr-x 3 root root 4096 Oct 26 14:10 ./
+drwxr-xr-x 1 root root 4096 Oct 26 14:11 ../
+drwxr-xr-x 4 1000 1000 4096 Oct 26 13:59 app/
+-rwxr-xr-x 1 1000 1000   44 Oct 26 13:59 entry.sh*
+
+
+root@docker-desktop:/dockerHome# ./app/bin/hello
+Learning docker
+Learning docker
+^C
+
+
+root@docker-desktop:/dockerHome# exit
+exit
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ docker stop hello
+hello
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ docker rm hello
+hello
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ docker rmi hello
+Error: No such image: hello
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ rm hello.tar
+
+
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ ll
+total 16
+drwxr-xr-x 3 ratnesh ratnesh 4096 Oct 26 19:42 ./
+drwxr-xr-x 5 ratnesh ratnesh 4096 Oct 26 19:19 ../
+drwxr-xr-x 4 ratnesh ratnesh 4096 Oct 26 19:29 app/
+-rwxr-xr-x 1 ratnesh ratnesh 1890 Oct 26 19:40 build_docker.sh*
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$
