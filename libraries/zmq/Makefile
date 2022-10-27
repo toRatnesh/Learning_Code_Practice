@@ -35,7 +35,7 @@ INCDIRS := $(shell find $(INCDIR) -not -path '*/\.*' -type d -name '*')
 
 INCLUDEDIRS := $(foreach dir, $(INCDIRS), -I$(dir)/)
 
-CXX = g++ -std=c++17 -g -Wall -Wextra -Wpedantic -Wconversion
+CXX = g++ -std=c++17 -g -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address
 LIBS = -lzmq
 
 .PHONY: ALL
@@ -62,7 +62,7 @@ $(OBJDIR)%.o : %.cpp
 
 .PHONY: clean
 clean:
-	rm -f $(OBJS)
+	rm $(OBJS)
 	rm  $(BINDIR)*
 
 #######################

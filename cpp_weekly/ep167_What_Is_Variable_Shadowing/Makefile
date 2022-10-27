@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -Wshadow -g -std=c++98
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -Wshadow -g -std=c++98
 TARGET  = variable_shadowing
 SRC     = variable_shadowing.cpp
 
@@ -9,7 +9,7 @@ $(TARGET): $(SRC)
 
 .PHONY: clean
 clean:
-	rm -f $(TARGET)
+	rm $(TARGET)
 
 .PHONY: run
 run:

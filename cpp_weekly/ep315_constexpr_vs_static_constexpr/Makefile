@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++11
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++11
 TARGET  = constexpr_vs_static_constexpr
 SRC     = constexpr_vs_static_constexpr.cpp
 
@@ -9,7 +9,7 @@ $(TARGET): $(SRC)
 
 .PHONY: clean
 clean:
-	rm -f $(TARGET)
+	rm $(TARGET)
 
 .PHONY: run
 run:

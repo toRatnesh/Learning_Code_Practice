@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wpedantic -Wconversion  -g -std=c++20
+CC      = g++ -Wall -Wpedantic -Wconversion -fsanitize=address  -g -std=c++20
 TARGET  = type_not_be_named
 SRC     = type_not_be_named.cpp
 
@@ -9,7 +9,7 @@ $(TARGET): $(SRC)
 
 .PHONY: clean
 clean:
-	rm -f $(TARGET)
+	rm $(TARGET)
 
 .PHONY: run
 run:

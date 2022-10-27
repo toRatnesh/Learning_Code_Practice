@@ -9,7 +9,7 @@ $(TARGET): $(SRC)
 
 .PHONY: clean
 clean:
-	rm -f $(TARGET)
+	rm $(TARGET)
 
 .PHONY: run
 run:

@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -g -std=c++17 -fsanitize=address
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
 TARGET  = stop_using_constexpr
 SRC     = stop_using_constexpr.cpp
 
@@ -9,7 +9,7 @@ $(TARGET): $(SRC)
 
 .PHONY: clean
 clean:
-	rm -f $(TARGET)
+	rm $(TARGET)
 
 .PHONY: run
 run:

@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++11 -fsanitize=address -fsanitize=leak 
+CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion -fsanitize=address -fsanitize=leak -g -std=c++11
 TARGET  = sanitizers
 SRC     = sanitizers.cpp
 
@@ -9,7 +9,7 @@ $(TARGET): $(SRC)
 
 .PHONY: clean
 clean:
-	rm -f $(TARGET)
+	rm $(TARGET)
 
 .PHONY: run
 run:

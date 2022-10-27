@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++14 
+CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion -fsanitize=address  -g -std=c++14 
 TARGET  = Next
 SRC     = Next.cpp
 
@@ -9,5 +9,5 @@ $(TARGET): $(SRC)
 
 .PHONY: clean
 clean:
-	rm -f $(TARGET)
+	rm $(TARGET)
 

@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wpedantic -Wconversion  -g -std=c++14
+CC      = g++ -Wall -Wpedantic -Wconversion -fsanitize=address  -g -std=c++14
 TARGET  = MapMemberAccess
 SRC     = *.cpp
 
@@ -9,5 +9,5 @@ $(TARGET): $(SRC)
 
 .PHONY: clean
 clean:
-	rm -f $(TARGET)
+	rm $(TARGET)
 

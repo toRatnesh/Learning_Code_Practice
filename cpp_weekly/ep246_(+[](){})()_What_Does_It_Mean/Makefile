@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wpedantic -Wconversion  -g -std=c++11
+CC      = g++ -Wall -Wpedantic -Wconversion -fsanitize=address  -g -std=c++11
 TARGET  = lambda_to_functionPointer_cast
 SRC     = lambda_to_functionPointer_cast.cpp
 
@@ -9,7 +9,7 @@ $(TARGET): $(SRC)
 
 .PHONY: clean
 clean:
-	rm -f $(TARGET)
+	rm $(TARGET)
 
 .PHONY: run
 run:

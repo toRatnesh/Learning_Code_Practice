@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion  -g -std=c++11
+CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion -fsanitize=address  -g -std=c++11
 TARGET  = StopUsingEndl
 SRC     = StopUsingEndl.cpp
 
@@ -15,7 +15,7 @@ $(TARGET2): $(SRC2)
 
 .PHONY: clean
 clean:
-	rm -f $(TARGET) $(TARGET2)
+	rm $(TARGET) $(TARGET2)
 
 .PHONY: run
 run:

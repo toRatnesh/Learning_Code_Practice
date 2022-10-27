@@ -16,7 +16,7 @@ SRCDIRS = $(sort $(TEMPDIRS))
 CPPOBJFILES := $(addprefix $(OBJDIR), $(notdir $(CPPSRCFILES:.cpp=.o)))
 OBJS :=  $(CPPOBJFILES) 
 
-CXX = g++ -std=c++17 -g -Wall -Wextra -Wpedantic -Wconversion
+CXX = g++ -std=c++17 -g -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address
 .PHONY: ALL
 ALL : $(BINDIR)$(BINNAME)
 
@@ -32,8 +32,8 @@ $(OBJDIR)%.o : %.cpp
 
 .PHONY: clean
 clean:
-	rm -f $(OBJS)
-	rm -f $(BINDIR)$(BINNAME)
+	rm $(OBJS)
+	rm $(BINDIR)$(BINNAME)
 
 #######################
 #	END OF FILE

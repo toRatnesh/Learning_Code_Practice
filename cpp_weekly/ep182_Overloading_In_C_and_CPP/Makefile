@@ -1,4 +1,4 @@
-CC      = gcc -Wall -Wextra -Wpedantic -Wconversion  -g
+CC      = gcc -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g
 TARGET  = c_overload
 SRC     = c_overload.c
 
@@ -9,7 +9,7 @@ $(TARGET): $(SRC)
 
 .PHONY: clean
 clean:
-	rm -f $(TARGET)
+	rm $(TARGET)
 
 .PHONY: run
 run:
