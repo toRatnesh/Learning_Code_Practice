@@ -120,6 +120,10 @@ hello
 ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ docker rmi hello
 Error: No such image: hello
 
+ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ docker rmi hello:version-1
+Untagged: hello:version-1
+Deleted: sha256:e7a70602572b009e325ad0009810f3fe0c04f9497f4c7e749a4a82acb22a3116
+Deleted: sha256:72b09d3a194744efa0e228b858bb302058de82f5e966ca68acd2427775cd504b
 
 ratnesh@hp:~/Learning_Code_Practice/docker/advance_without_dockerfile$ rm hello.tar
 

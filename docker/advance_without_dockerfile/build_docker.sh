@@ -12,7 +12,7 @@
 #################################
 
 
-BASE_IMAGE=baseimage_2_0_0
+BASE_IMAGE=ubuntu
 TEMP_IMG_NAME=hello_temp
 FINAL_IMG_NAME=hello
 
@@ -31,17 +31,20 @@ docker exec -it ${TEMP_IMG_NAME} mkdir -p /dockerHome
 docker exec -it ${TEMP_IMG_NAME} mkdir -p /learningDocker
 docker exec -it ${TEMP_IMG_NAME} mkdir -p /home/testDir
 docker cp app ${TEMP_IMG_NAME}:/dockerHome/
+docker cp app/entry.sh ${TEMP_IMG_NAME}:/dockerHome/
+docker exec -it ${TEMP_IMG_NAME} chmod 755 /dockerHome/entry.sh
 docker cp app ${TEMP_IMG_NAME}:/learningDocker/
 set -x ##echo on
 sleep 1
 
 echo "Do you want to save the docker?"
-echo "(Press y/Y to save or other to exit)"
+echo "(Press Y to save or other to exit)"
 read save_flag
-if [ ${save_flag} == 'y' ] || [ ${save_flag} == 'Y' ];
+#if [ ${save_flag} == 'y' ] || [ ${save_flag} == 'Y' ];
+if [ ${save_flag} == 'Y' ];
 then
 	tempImageContainerId=`docker container ls | grep ${TEMP_IMG_NAME} | awk {'print $1'}`
-	docker commit -c "WORKDIR /dockerHome" ${tempImageContainerId} ${FINAL_IMG_NAME}:version-1
+	docker commit -c "WORKDIR /dockerHome" -c 'ENTRYPOINT ["./entry.sh"]' ${tempImageContainerId} ${FINAL_IMG_NAME}:version-1
 	docker save -o ${FINAL_IMG_NAME}.tar ${FINAL_IMG_NAME}:version-1
 	
 	docker stop ${TEMP_IMG_NAME}

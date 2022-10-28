@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE_IMAGE=baseimage_2_0_0
+BASE_IMAGE=ubuntu
 #name should not overlap as it would create error in grep
 TEMP_BASE_IMG_NAME=temp_base_img
 FINAL_IMG_NAME=hello
@@ -21,6 +21,8 @@ docker exec -it ${TEMP_BASE_IMG_NAME} mkdir -p /dockerHome
 docker exec -it ${TEMP_BASE_IMG_NAME} mkdir -p /learningDocker
 docker exec -it ${TEMP_BASE_IMG_NAME} mkdir -p /home/testDir
 docker cp app ${TEMP_BASE_IMG_NAME}:/dockerHome/
+docker cp app/entry.sh ${TEMP_BASE_IMG_NAME}:/dockerHome/entry.sh
+docker exec -it ${TEMP_BASE_IMG_NAME} chmod 755 /dockerHome/entry.sh
 docker cp app ${TEMP_BASE_IMG_NAME}:/learningDocker/
 set -x ##echo on
 ### get the image containerId, paste and run.
