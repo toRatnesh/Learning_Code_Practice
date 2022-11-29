@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
-TARGET  = hexadecimal_floating-point_literals
-SRC     = hexadecimal_floating-point_literals.cpp
+TARGET  = Passing_Copies_of_this_to_Lambdas
+SRC     = Passing_Copies_of_this_to_Lambdas.cpp
 
 ALL : $(TARGET)
 

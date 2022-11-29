@@ -1,8 +1,16 @@
-CC      = g++ -Wall  -Wextra  -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+TARGET  = relaxed_enum_initialization
+SRC     = relaxed_enum_initialization.cpp
 
-ALL: 
-	$(CC) -o relaxed_enum_initialization relaxed_enum_initialization.cpp
+ALL : $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CC) -o $(TARGET) $(SRC)
 
 .PHONY: clean
 clean:
-	rm relaxed_enum_initialization
+	rm $(TARGET)
+
+.PHONY: run
+run:
+	./$(TARGET)

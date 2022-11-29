@@ -1,8 +1,16 @@
-CC      = g++ -Wall  -Wextra  -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+TARGET  = expression_evaluation_order
+SRC     = expression_evaluation_order.cpp
 
-ALL: 
-	$(CC) -o expression_evaluation_order expression_evaluation_order.cpp
+ALL : $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CC) -o $(TARGET) $(SRC)
 
 .PHONY: clean
 clean:
-	rm expression_evaluation_order
+	rm $(TARGET)
+
+.PHONY: run
+run:
+	./$(TARGET)

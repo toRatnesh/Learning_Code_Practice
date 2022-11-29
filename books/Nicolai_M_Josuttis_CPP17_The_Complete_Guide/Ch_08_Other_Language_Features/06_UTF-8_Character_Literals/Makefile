@@ -1,8 +1,16 @@
-CC      = g++ -Wall  -Wextra  -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+TARGET  = utf-8_character_literals
+SRC     = utf-8_character_literals.cpp
 
-ALL: 
-	$(CC) -o utf-8_character_literals utf-8_character_literals.cpp
+ALL : $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CC) -o $(TARGET) $(SRC)
 
 .PHONY: clean
 clean:
-	rm utf-8_character_literals
+	rm $(TARGET)
+
+.PHONY: run
+run:
+	./$(TARGET)

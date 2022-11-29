@@ -1,8 +1,16 @@
-CC      = g++ -Wall  -Wextra  -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+TARGET  = aggregate_extensions
+SRC     = aggregate_extensions.cpp
 
-ALL: 
-	$(CC) -o 4_Aggregate_Extensions 4_Aggregate_Extensions.cpp
+ALL : $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CC) -o $(TARGET) $(SRC)
 
 .PHONY: clean
 clean:
-	rm 4_Aggregate_Extensions
+	rm $(TARGET)
+
+.PHONY: run
+run:
+	./$(TARGET)

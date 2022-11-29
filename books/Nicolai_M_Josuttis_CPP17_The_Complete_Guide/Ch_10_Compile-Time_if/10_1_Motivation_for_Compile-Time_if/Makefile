@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
-TARGET  = hexadecimal_floating-point_literals
-SRC     = hexadecimal_floating-point_literals.cpp
+TARGET  = Motivation_for_Compile-Time_if
+SRC     = Motivation_for_Compile-Time_if.cpp
 
 ALL : $(TARGET)
 

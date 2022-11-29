@@ -1,8 +1,16 @@
-CC      = g++ -Wall  -Wextra  -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+TARGET  = attributes
+SRC     = attributes.cpp
 
-ALL: 
-	$(CC) -o attributes attributes.cpp
+ALL : $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CC) -o $(TARGET) $(SRC)
 
 .PHONY: clean
 clean:
-	rm attributes
+	rm $(TARGET)
+
+.PHONY: run
+run:
+	./$(TARGET)

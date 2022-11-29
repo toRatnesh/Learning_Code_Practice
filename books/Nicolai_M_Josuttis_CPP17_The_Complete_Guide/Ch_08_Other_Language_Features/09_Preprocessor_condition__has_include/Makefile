@@ -1,8 +1,16 @@
-CC      = g++ -Wall  -Wextra  -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+TARGET  = preprocessor_condition__has_include
+SRC     = preprocessor_condition__has_include.cpp
 
-ALL: 
-	$(CC) -o preprocessor_condition__has_include preprocessor_condition__has_include.cpp
+ALL : $(TARGET)
+
+$(TARGET): $(SRC)
+	$(CC) -o $(TARGET) $(SRC)
 
 .PHONY: clean
 clean:
-	rm preprocessor_condition__has_include
+	rm $(TARGET)
+
+.PHONY: run
+run:
+	./$(TARGET)

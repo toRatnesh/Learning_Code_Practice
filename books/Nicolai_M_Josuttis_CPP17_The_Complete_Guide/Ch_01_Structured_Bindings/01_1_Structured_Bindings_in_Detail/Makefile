@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
-TARGET  = hexadecimal_floating-point_literals
-SRC     = hexadecimal_floating-point_literals.cpp
+TARGET  = Structured_Bindings_in_Detail
+SRC     = Structured_Bindings_in_Detail.cpp
 
 ALL : $(TARGET)
 
