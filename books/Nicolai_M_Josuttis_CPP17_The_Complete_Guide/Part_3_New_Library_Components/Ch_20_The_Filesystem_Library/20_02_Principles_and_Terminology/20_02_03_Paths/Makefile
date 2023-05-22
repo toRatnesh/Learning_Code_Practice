@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
 TARGET  = filepath
-SRC     = filepath.cpp
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 

@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
 TARGET  = conversions_between_native_and_generic_format
-SRC     = conversions_between_native_and_generic_format.cpp
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 

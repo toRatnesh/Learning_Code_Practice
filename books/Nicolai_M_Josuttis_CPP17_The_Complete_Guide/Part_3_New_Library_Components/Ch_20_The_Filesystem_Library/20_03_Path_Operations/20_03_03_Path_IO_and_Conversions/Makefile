@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
 TARGET  = path_io_and_conversions
-SRC     = path_io_and_conversions.cpp
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 

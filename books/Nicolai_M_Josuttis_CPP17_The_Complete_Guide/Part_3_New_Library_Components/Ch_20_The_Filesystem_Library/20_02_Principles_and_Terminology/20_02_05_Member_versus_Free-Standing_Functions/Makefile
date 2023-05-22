@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
 TARGET  = member_vs_free_functions
-SRC     = member_vs_free_functions.cpp
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 

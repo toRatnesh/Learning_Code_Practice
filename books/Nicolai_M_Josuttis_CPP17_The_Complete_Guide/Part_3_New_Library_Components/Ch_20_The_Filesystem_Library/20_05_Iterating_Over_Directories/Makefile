@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
 TARGET  = iterating_over_directories
-SRC     = iterating_over_directories.cpp
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 

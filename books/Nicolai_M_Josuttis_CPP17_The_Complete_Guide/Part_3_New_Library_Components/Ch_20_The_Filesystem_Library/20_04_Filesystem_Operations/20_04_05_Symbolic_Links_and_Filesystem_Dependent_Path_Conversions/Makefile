@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
 TARGET  = symbolic_link_and_filesystem_dependent_path
-SRC     = symbolic_link_and_filesystem_dependent_path.cpp
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 

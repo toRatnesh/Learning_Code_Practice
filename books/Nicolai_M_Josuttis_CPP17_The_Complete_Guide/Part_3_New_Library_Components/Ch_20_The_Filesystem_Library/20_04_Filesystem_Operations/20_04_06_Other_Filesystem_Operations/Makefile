@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
 TARGET  = other_file_operations
-SRC     = other_file_operations.cpp
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 

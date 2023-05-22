@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
 TARGET  = filesystem_error_handling
-SRC     = filesystem_error_handling.cpp
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 

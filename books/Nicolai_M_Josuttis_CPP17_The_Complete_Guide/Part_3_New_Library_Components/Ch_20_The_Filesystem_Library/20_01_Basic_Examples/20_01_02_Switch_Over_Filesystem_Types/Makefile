@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
 TARGET  = switch_over_filesystem_types
-SRC     = switch_over_filesystem_types.cpp
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 

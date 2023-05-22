@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
 TARGET  = using_string_views_in_APIs
-SRC     = using_string_views_in_APIs.cpp
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 

@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
 TARGET  = differences_to_std_string
-SRC     = differences_to_std_string.cpp
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 

@@ -1,6 +1,6 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
 TARGET  = dealing_with_filesystems_using_parallel_algorithms
-SRC     = dealing_with_filesystems_using_parallel_algorithms.cpp
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 
