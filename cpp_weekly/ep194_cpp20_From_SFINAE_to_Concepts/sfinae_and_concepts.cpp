@@ -20,7 +20,7 @@
 #include <type_traits>
 
 template<typename Float_t,
-	typename = std::enable_if_t<std::is_floating_point_v<Float_t>> // pre c++20
+	std::enable_if_t<std::is_floating_point_v<Float_t>, bool> = true // pre c++20
 	> 
 	//requires(std::is_floating_point_v<Float_t>)     // since c++20
 	auto add_float(const Float_t p1, const Float_t p2) {

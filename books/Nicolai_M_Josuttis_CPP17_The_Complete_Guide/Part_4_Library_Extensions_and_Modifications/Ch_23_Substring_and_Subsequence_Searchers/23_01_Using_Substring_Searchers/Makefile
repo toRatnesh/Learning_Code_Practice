@@ -1,5 +1,5 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++20
-TARGET  = std_format
+TARGET  = using_substring_searchers
 SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)

@@ -1,5 +1,5 @@
-CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++20
-TARGET  = std_format
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+TARGET  = container_support_of_incomplete_types
 SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)

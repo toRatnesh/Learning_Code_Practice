@@ -1,5 +1,5 @@
-CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++20
-TARGET  = std_format
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++11
+TARGET  = do_constructors_exist
 SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)

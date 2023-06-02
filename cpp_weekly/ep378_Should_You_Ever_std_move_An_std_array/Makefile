@@ -1,5 +1,5 @@
-CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++20
-TARGET  = std_format
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+TARGET  = should_you_ever_std_move_an_std_array
 SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)

@@ -1,5 +1,5 @@
-CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++20
-TARGET  = std_format
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++23
+TARGET  = out_ptr_and_inout_ptr
 SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
