@@ -1,5 +1,5 @@
-CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
-TARGET  = relaxed_enum_initialization
+CC      = g++ -Wall -Wextra  -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
+TARGET  = user-provided_vs_user-declared_destructor
 SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)

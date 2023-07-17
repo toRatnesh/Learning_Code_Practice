@@ -13,6 +13,7 @@ References:
 
 #include <iostream>
 #include <cassert>
+#include <cstdint>
 
 // 3. Relaxed Enum Initialization from Integral Values
 enum UnscopedEnum_WithoutType {RED, GREEN, BLACK};
@@ -64,3 +65,5 @@ int main() {
 /***************
     END OF FILE
 *****************/
+
+

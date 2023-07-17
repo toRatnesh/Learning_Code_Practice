@@ -1,5 +1,5 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
-TARGET  = relaxed_enum_initialization
+TARGET  = clang-tidy_Easily_Swappable_Parameters_Warning
 SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)

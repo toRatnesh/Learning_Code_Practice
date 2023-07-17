@@ -1,11 +1,11 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address  -g -std=c++17
-TARGET  = relaxed_enum_initialization
+TARGET  = dealing_with_the_different_types
 SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 
 $(TARGET): $(SRC)
-	$(CC) -o $(TARGET) $(SRC)
+	$(CC) -o $(TARGET) $(SRC) 
 
 .PHONY: clean
 clean:
