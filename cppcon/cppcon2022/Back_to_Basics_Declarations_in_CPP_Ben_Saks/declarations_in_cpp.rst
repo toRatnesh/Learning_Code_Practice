@@ -531,7 +531,7 @@ Reference
 ---------
 
 | `Back to Basics: Declarations in C++ - Ben Saks - CppCon 2022 <https://www.youtube.com/watch?v=IK4GhjmSC6w>`_
-| `ep357_typename_VS_class_In_Templates <https://github.com/toRatnesh/Learning_Code_Practice/blob/main/cpp_weekly/ep357_typename_VS_class_In_Templates/typename_vs_class_in_template.cpp>`
+| `ep357_typename_VS_class_In_Templates <https://github.com/toRatnesh/Learning_Code_Practice/blob/main/cpp_weekly/ep357_typename_VS_class_In_Templates/typename_vs_class_in_template.cpp>`_
 | Item 42: Understand the two meanings of typename | Effective C++ - Scott Meyers
 
 
