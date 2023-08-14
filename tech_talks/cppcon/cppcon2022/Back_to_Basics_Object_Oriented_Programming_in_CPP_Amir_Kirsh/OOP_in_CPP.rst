@@ -202,12 +202,16 @@ try to keep your classes under the rule of zero
 Inheritance
 -----------
 
-Instead of using a inheritance like this
+When using a inheritance like this
+
+.. image:: ../.resources/Back_to_Basics_Object_Oriented_Programming_in_CPP_Amir_Kirsh/inheritance_01.png
 
 Issue with this type of inheritance is that if we want QAEnginner to make DevEngineer there is no way to do that without destructing the QAEnginner object and then creating a DevEngineer object
 
+Instead make specific classes, like this
 
-Make specific classes, like this
+.. image:: ../.resources/Back_to_Basics_Object_Oriented_Programming_in_CPP_Amir_Kirsh/inheritance_02.png
+
 
 This will use state design pattern and will be better 
 
