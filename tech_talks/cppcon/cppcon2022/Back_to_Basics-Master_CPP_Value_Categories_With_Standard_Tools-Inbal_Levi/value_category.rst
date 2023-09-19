@@ -150,7 +150,7 @@ Value Category is a **quality of an expression**
 	};
 
 	void fun(Data && data) {
-	  data = 10;
+	  data = 10;            // data is lvalue is inside function
 	}
 
 	int main() {
@@ -179,6 +179,11 @@ During a function call:
 - Step I : Calls constructor, creates an unnamed temp Data(12)
 - Step II : 'Data(12)' binds to the rvalue reference data
 - Step III : The entity which used to be 'Data(12)' has a name data, therefore, **in the scope of fun(), data is now an lvalue**
+
+
+|
+|
+
 
 Each expression has two properties:
 
@@ -218,7 +223,7 @@ Expression is either an lvalue or an rvalue
 **C++11: added rvalue references, move semantics**
 
 .. list-table::
-	header-rows: 1
+	:header-rows: 1
 
 	*	-
 		- Has Identity (glvalue)
@@ -234,8 +239,10 @@ Expression is either an lvalue or an rvalue
 		
 **C++17: Added guaranteed copy elision**
 
+The result of a prvalue is the value that the expression stores into its context
+
 .. list-table::
-	header-rows: 1
+	:header-rows: 1
 
 	*	-
 		- Has Identity (glvalue)
@@ -249,7 +256,6 @@ Expression is either an lvalue or an rvalue
 		- xvalue
 		- prvalue’s materialization
 
-"The result of a prvalue is the value that the expression stores into its context"
 	
 **C++20**
 
@@ -289,31 +295,38 @@ Examples
 
 .. code:: cpp
 
-	struct Data { int n; int pn = n; };
-	Data& getData (Data& d) { return d }
+        #include <string>
 
-	int a = 42;			// a is lvalue
-	int b = a;			// b is lvalue
+        struct Data { int n; int * pn = &n; };
+        Data& getData (Data& d) { return d; }
 
-	int& iref = a;		// iref is lvalue
-	int* iptr = &a;		// iptr is lvalue
+        int main() {
 
-	int&& ra = 42;
-	a++;
-	++a;				// ++a is lvalue
 
-	int arr[] = {1, 2, 3};	// arr[] is lvalue
-	arr[0] = 73;			// arr[0] is lvalue
+            int a = 42;         // a is lvalue
+            int b = a;          // b is lvalue
+            int c = b;          // c is lvalue        
 
-	Data d;				// d is lvalue
-	(&d)->n = 42;		// (&d)->n is lvalue
-	d.n = 73;			// d.n is lvalue
-	*d.pn = 42;			// *d.pn is lvalue
+            int& iref = a;      // iref is lvalue
+            int* iptr = &a;     // iptr is lvalue
 
-	string s ="Hello World";	// s is lvalue
-	a==b ? b : c;		// is lvalue when b and c are lvalues
+            int&& ra = 42;      // ra has type rvalue referene, value category lvalue
+            a++;
+            ++a;                // ++a is lvalue
 
-	Data c = getData(d);	// return value of function that creates c is lvalue
+            int arr[] = {1, 2, 3};      // arr[] is lvalue
+            arr[0] = 73;                // arr[0] is lvalue
+
+            Data d;                     // d is lvalue
+            (&d)->n = 42;               // (&d)->n is lvalue
+            d.n = 73;                   // d.n is lvalue
+            *(d.pn) = 42;               // *d.pn is lvalue
+
+            std::string s ="Hello World";       // s is lvalue
+            a==b ? b : c;               // ternary return value is lvalue when b and c are lvalues
+
+            Data data = getData(d);    // return value of function that creates data is lvalue    
+        }
 
 
 .. note::
@@ -326,56 +339,71 @@ ra has the type: rvalue reference to int, with the value category: lvalue
 
 .. code:: cpp
 
-	struct Data {
-		int n;
-		int foo() { this->n = 4 ; }	// this is prvalue, 4 is prvalue
-	};
+        #include <string>
 
-	int a = 42;		// 42 is prvalue
+        struct Data {
+            int n;
+            int foo() { this->n = 4; }  // this is prvalue, 4 is prvalue
+        };
 
-	int* pa = &a;	// &a is prvalue
-	pa = nullptr;	// nullptr is prvalue
+        int main() {
+            int a = 42;         // 42 is prvalue
 
-	a++;			// built-in post increment a++ is prvalue
-	++a;
+            int* pa = &a;       // &a is prvalue
+            pa = nullptr;       // nullptr is prvalue
 
-	auto l = [](){ return 2 ;};	// lambda [](){ return 2 ;} is prvalue
+            a++;                // built-in post increment a++ is prvalue
+            ++a;
 
-	Data d;
-	Data* dp = &d;
+            auto l = []() { return 2; };  // lambda [](){ return 2 ;} is prvalue
 
-	Data();
+            Data d;
+            Data* dp = &d;
 
-	d->n = 6;		// 6 is prvalue
-	d.n	 = 6;		// 6 is prvalue
+            Data();
 
-	string s ="Hello World";	
+            dp->n = 6;          // 6 is prvalue
+            d.n = 6;            // 6 is prvalue
 
-	a==a ? throw 4 : throw 2;	// throw is prvalue void
-	bool equals = a==42;	// a==42 is prvalue
+            std::string s = "Hello World";      // string literal is not prvalue
 
+            a == a ? throw 4 : throw 2;         // throw is prvalue, void
+            bool equals = a == 42;              // a==42 is prvalue
 
+            return 0;
+        }
 
 **xvalue**
 
 .. code:: cpp
 
-	struct Data { int n; int* pn = &n; };
-	Data d1 = Data(42);		// Data(42) is xvalue
-	d1.*pn = 73;
+        #include <utility>
 
-	Data d2 = std::move(d1);	// std::move(d1) is xvalue
+        struct Data {
+            int n;
+            int* pn = &n;
 
-	// Data().n is xvalue, because in order to get n we need to create the object even if its temporary
-	Data().n;				// Data().n is xvalue
+            Data(int val) : n(val) {}
+        };
 
+        Data getData() { return Data(73); }
 
-	Data getData () {
-		return Data(73);
-	}
+        int main() {
+            Data d1 = Data(42);         // Data(42) is xvalue
+            d1.*pn = 73;
 
-	Data d3 = getData();		// function return value is xvalue
-	d1==d2 ? Data(42) : Data(73);	// return value of ternary is xvalue
+            Data d2 = std::move(d1);    // std::move(d1) is xvalue
+
+            // Data().n is xvalue, because in order to get n we need to 
+            //create the object even if its temporary
+            Data(32).n;                         // Data(32).n is xvalue
+
+            Data d3 = getData();                // function return value is xvalue
+            d1 == d2 ? Data(42) : Data(73);     // return value of ternary is xvalue
+
+            return 0;
+        }
+
 
 
 Value Categories In Practice
@@ -404,7 +432,7 @@ To Compile a function call, compiler creates list of candidates, then finds corr
 The details of binding
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Expressions with different Value Categories bind ” to different types of References
+Expressions with different Value Categories "bind" to different types of References
 
 The Reference type which binds the expression determines the permitted operations
 
@@ -439,7 +467,7 @@ Binding rules are important for
 Rule
 
 .. list-table::
-	header-rows: 1
+	:header-rows: 1
 
 	*	- 
 		- Binds lvalues?
@@ -484,6 +512,7 @@ Rule
 The Lifetime of an object can be extended by binding to references:
 
 const lvalue reference : extends lifetime of an object (not allowing modification)
+
 rvalue reference : extends lifetime of a temporary objects
 
 
@@ -533,7 +562,7 @@ rvalue reference : extends lifetime of a temporary objects
 Limitations on the object in the context of the function are according to the binding function
 
 .. list-table::
-	header-rows: 1
+	:header-rows: 1
 
 	*	- 
 		- Function can modify data?
@@ -569,7 +598,8 @@ Copy elision optimizations
 ~~~~~~~~~~~~~~~~~~~~~
 
 - Starting from C++17, the behavior of VCs is affected by:
-  "P0135 : Guaranteed copy elision (…)"
+
+  `P0135 <https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0135r1.html>`_ : Guaranteed copy elision (…)"
   
 - There are two mandatory elisions of copy and move constructors:
 
@@ -577,36 +607,72 @@ Copy elision optimizations
   
   .. code:: cpp
   
-	Data d = Data(Data(42));	// 1 CTOR (avoids: CTOR, Copy CTOR)
+	Data d1 = Data(Data(42));        // 1 CTOR (avoids: CTOR, Copy CTOR)
 	
   2. Return statement:
   
   An unnamed Return Value Optimization (RVO): 
+
   .. code:: cpp
   
-	Data getData int x){ return Data(x); }
-	Data d = getData(42);		// 1 CTOR (avoids: CTOR, Move CTOR)
+	Data returnValue(int x) { return Data(x); }
+	Data d2 = returnValue(42);       // 1 CTOR (avoids: CTOR, Move CTOR)
 	
 
 No change in non mandatory Named Return Value Optimization (NRVO)
 
 .. code:: cpp
 
-	Data getData int x){ Data d(x) return d; }
-	Data d = getData(42);		// 1 CTOR (avoids: CTOR, Move CTOR)
+	Data namedReturnValue(int x) { Data d(x); return d; }
+	Data d3 = namedReturnValue(42);  // 1 CTOR (avoids: CTOR, Move CTOR)
+
+
+.. code:: cpp
+
+        #include <iostream>
+
+        class Data {
+            int m_val;
+
+           public:
+            Data(int val) : m_val(val) {
+                std::cout << "Constructor\n";
+            }
+        };
+
+        Data returnValue(int x) { return Data(x); }
+
+        Data namedReturnValue(int x) { Data d(x); return d; }
+
+        int main() {
+            Data d1 = Data(Data(42));        // 1 CTOR (avoids: CTOR, Copy CTOR)
+            Data d2 = returnValue(42);       // 1 CTOR (avoids: CTOR, Move CTOR)
+            Data d3 = namedReturnValue(42);  // 1 CTOR (avoids: CTOR, Move CTOR)
+
+            return 0;
+        }
+
+Output::
+
+        Constructor
+        Constructor
+        Constructor
 	
 Return Statement: Materialization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Temporary materialization conversion [conv.rval]
+Temporary materialization conversion `[conv.rval] <https://eel.is/c++draft/conv.rval>`_
+
 A prvalue of type T can be converted to an xvalue of type T.
+
 This conversion initializes a temporary object of type T from the prvalue by evaluating the prvalue with the temporary object as its result object, and produces an xvalue denoting the temporary object
+
 [in order to materialize] T shall be a complete type.
 
 .. code:: cpp
 
-	Data getData(int x){ return Data(x); }
-	Data d = getData(42);
+	Data returnValue(int x) { return Data(x); }
+	Data d2 = returnValue(42);
 
 1. prvalue of type Data
 2. Temp data evaluating prvalue
@@ -614,8 +680,8 @@ This conversion initializes a temporary object of type T from the prvalue by eva
 
 .. code:: cpp
 
-	Data getData int x){ Data d(x) return d; }
-	Data d = getData(42);
+	Data namedReturnValue(int x) { Data d(x); return d; }
+	Data d3 = namedReturnValue(42);
 	
 1. lvalue of type Data
 2. lvalue initializes temp data
@@ -627,30 +693,50 @@ Return Statement: const vs non const
 
 .. code:: cpp
 
-	Data getData int x){ return Data(x); }
-		
-	Data		data		= getData(13);	// lval (no temporary, RVO)
-	Data&		ref_data	= getData(13);	// Error: xval -> non const lval ref
-	const Data&	cref_data	= getData(13);	// xval -> const lval ref (extends lifetime)
-	Data&&		rref_data	= getData(13);	// xval -> rval ref  (extends lifetime)
+        #include <iostream>
 
-	
-.. code:: cpp
+        class Data {
+            int m_val;
 
-	const Data getData int x){ return Data(x); }	
+           public:
+            Data(int val) : m_val(val) {
+                std::cout << "Constructor\n";
+            }
+        };
 
-	
-	Data			data		= getData(13);	// lval (no temporary, RVO)	
-	Data&			ref_data	= getData(13);	// Error: const xval -> non const lval ref
-	const Data&		cref_data	= getData(13);	// const xval -> const lval ref (extends lifetime)
-	Data&&			rref_data	= getData(13);	// Error: const xval -> rval ref
-	const Data&&	crref_data	= getData(13);	// const xval -> const rval ref (extends lifetime)
-	
+        Data getNonConstData(int x){ return Data(x); }
+
+        const Data getConstData(int x){ return Data(x); }
+
+        int main() {
+
+            // for non-const return value
+
+            Data            data            = getNonConstData(13);  // lval (no temporary, RVO)
+            Data&           ref_data        = getNonConstData(13);  // Error: xval -> non const lval ref
+            const Data&     cref_data       = getNonConstData(13);  // xval -> const lval ref (extends lifetime)
+            Data&&          rref_data       = getNonConstData(13);  // xval -> rval ref  (extends lifetime)
+
+            {
+
+            // for const return value
+
+            Data                    data            = getConstData(13);  // lval (no temporary, RVO)
+            Data&                   ref_data        = getConstData(13);  // Error: const xval -> non const lval ref
+            const Data&             cref_data       = getConstData(13);  // const xval -> const lval ref (extends lifetime)
+            Data&&                  rref_data       = getConstData(13);  // Error: const xval -> rval ref
+            const Data&&            crref_data      = getConstData(13);  // const xval -> const rval ref (extends lifetime)
+
+            }
+
+
+            return 0;
+        }
 	
 Vlaue Categories in Generic Code
 ---------------------------------
 
-Template instantiation and overload resolution are affected by the value category of the expression
+**Template instantiation and overload resolution are affected by the value category of the expression**
 
 When a function template participates in overload resolution, Template Argument Substitution Occurs
 
@@ -660,7 +746,7 @@ Template arguments can be affected by lvalue-to-rvalue, array-to-pointer, or fun
 Reference collision
 ^^^^^^^^^^^^^^^^^^^^^^
 
-In case of concatenation of multiple ‘&’ symbols:
+In case of concatenation of multiple '&' symbols:
 
 - In generic code
 - In code using type aliases
@@ -698,11 +784,14 @@ Forwarding reference
 
 Forwarding parameters inside a function template should consider Value Categories
 
-The term for them was first suggested by Scott Myers, “universal reference”
+The term for them was first suggested by Scott Myers, "universal reference"
 
-Later formalized as "forwarding reference" [temp.deduct.call]
+Later formalized as "forwarding reference" `[temp.deduct.call] <https://timsong-cpp.github.io/cppwp/n4861/temp.deduct#def:forwarding_reference>`_
 
-Due to TAD, “ rvalue reference” has a special meaning in context of function template:
+Due to TAD, "rvalue reference" has a special meaning in context of function template
+
+|
+|
 
 T&& keeps the value category of the type the instantiation is based on
 
@@ -711,10 +800,11 @@ Type is deduced in order to keep the value category of the expression
 
 .. code:: cpp
 
-	template<typename T>
-	void fun(T&& t) { }
-
-	int main() {
+        #include <utility>
+        template<typename T>
+        void fun(T&& t) { }
+        
+        int main() {
 		int val = 5;
 		const int & cref = val;
 		int&& rref = 13;
@@ -723,16 +813,18 @@ Type is deduced in order to keep the value category of the expression
 		fun(cref);              // T&&  -> const int&&  -> T = const int&
 		fun(std::move(val));    // T&&  -> int&&        -> T = int
 		auto && uref = rref;    // T&&  -> int&&        -> T = int&
-		
+
+                return 0;
 	}
 
 
-Part IV: Tools for handling value categories
---------------------------------------------
+Tools for handling value categories
+--------------------------------------
 
 when template function is considered for overload resolution, Template Argument Substitution occurs
 
 Standard library and language provide different methods for querying and adjusting value category
+
 Following type_traits are example
 
 .. code :: cpp
@@ -740,7 +832,7 @@ Following type_traits are example
 	std::is_lvalue_reference<T>
 	std::is_rvalue_reference<T>
 
-Follwing section will use type traits, decltype and overload resolution to determine value category
+Following section will use type traits, decltype and overload resolution to determine value category
 
 - decltype specifier
 - std::move
@@ -758,9 +850,11 @@ decltype specifier
 
 	decltype(expression)
 	
-Evaluates an expression , yields its type + value category (AKA the declared
+Evaluates an expression , yields its type + value category (a.k.a. the declared type)
 
-decltype (unlike auto) preserves value category. For an expression of type T, 
+**decltype (unlike auto) preserves value category**
+
+For an expression of type T, 
 
 If expression is
 
@@ -774,13 +868,17 @@ Can be used instead of a type, as a placeholder which preserves value categories
 
 .. code:: cpp
 
-	int fun(int i) {
-		return std::move(i);
-	}
+        #include <utility>
 
-	int	i = 73;
-	auto a = fun(i);		// Type: int | VC: lvalue
-	decltype (auto) b = fun(i);	// Type: rvalue ref | VC: lvalue 
+        int fun(int i) { return std::move(i); }
+
+        int main() {
+            int i = 73;
+            auto a = fun(i);            // Type: int | VC: lvalue
+            decltype(auto) b = fun(i);  // Type: rvalue ref | VC: lvalue
+
+            return 0;
+        }
 
 
 The fine print:
@@ -792,9 +890,14 @@ The fine print:
 
 .. code:: cpp
 
-	int&& a = 42;
-	decltype(a) b = 42;		// Type: rvalue ref to int | VC: lvalue
-	decltype((a)) c = 73;	// Error! Binding non const lvalue ref to prvalue
+        int main() {
+            int&& a = 42;
+            decltype(a) b = 42;    // Type: rvalue ref to int | VC: lvalue
+            decltype((a)) c = 73;  // Error! Binding non const lvalue ref to prvalue
+
+            return 0;
+        }
+
 
 Use Case
 ~~~~~~~~~~
@@ -819,10 +922,14 @@ Use Case
 
 .. code:: cpp
 
-	int a = 42;		// Type: rvalue ref to int | VC: lvalue
-	decltype(a) b = a;	// Error! (binding rvalue ref to an lvalue ref a)
-	decltype(a) c = 73;	// Type: rvalue ref to int | VC: lvalue
-	decltype((a)) d = a;	// Type: lvalue ref to int | VC: lvalue
+        int main() {
+                        int a = 42;     // Type: rvalue ref to int | VC: lvalue
+            decltype(a)     b = a;      // Error! (binding rvalue ref to an lvalue ref a)
+            decltype(a)     c = 73;     // Type: rvalue ref to int | VC: lvalue
+            decltype((a))   d = a;      // Type: lvalue ref to int | VC: lvalue
+
+            return 0;
+        }
 
 
 std::move
@@ -844,25 +951,35 @@ std::move may not always do what you hoped
 
 .. code:: cpp
 
-	void fun(int& x) {
-		cout << "int&";
-	}
-	void fun(const int& x) {
-		cout << "const int&";
-	}
-	void fun(int&& x) {
-		cout << "int&&";
-	}
+        #include <iostream>
 
-	int main() {
-		int a = 73;
-		int b = a;
-		const int c = a;
-		const int d = 42;
-		fun(std::move(b));  // int&&        ->  fun(int&&)
-		fun(std::move(c));  // const int&   ->  fun(const int&)
-		fun(std::move(d));  // const int&&  ->  fun(const int&)
-	}
+        void fun(int& x) {
+            std::cout << "int& \n";
+        }
+        void fun(const int& x) {
+            std::cout << "const int& \n";
+        }
+        void fun(int&& x) {
+            std::cout << "int&& \n";
+        }
+
+        int main() {
+            int a = 73;
+            int b = a;
+            const int c = a;
+            const int d = 42;
+            fun(std::move(b));  // int&&        ->  fun(int&&)
+            fun(std::move(c));  // const int&   ->  fun(const int&)
+            fun(std::move(d));  // const int&&  ->  fun(const int&)
+
+            return 0;
+        }
+
+Output::
+
+        int&&
+        const int&
+        const int& 
 
 std::forward
 ^^^^^^^^^^^^^
@@ -944,13 +1061,35 @@ It resembles "auto"s behavior ("auto" performs auto decay)
 
 .. code:: cpp
 
-	template<typename T, typename U>
-	struct decay_is_same 
-		: std::is_same typename std::decay<T>::type, U>
-	{};
+        #include <iostream>
 
-	decay_is_same<int&, int >::value; // true
+        template<typename T, typename U>
+        struct decay_is_same
+                : std::is_same<typename std::decay<T>::type, U>
+        {};
 
+        int main() {
+            std::cout << std::boolalpha;
+
+            std::cout   << "decay_is_same<int&, int >::value "
+                        << decay_is_same<int&, int >::value << '\n'; // true
+            std::cout   << "decay_is_same<const int&, int >::value "
+                        << decay_is_same<const int&, int >::value << '\n'; // true                
+
+            std::cout   << "decay_is_same<int&&, int >::value "
+                        << decay_is_same<int&&, int >::value << '\n'; // true
+            std::cout   << "decay_is_same<const int&&, int >::value "
+                        << decay_is_same<const int&&, int >::value << '\n'; // true
+
+            return 0;
+        }
+
+Output::
+
+        decay_is_same<int&, int >::value true
+        decay_is_same<const int&, int >::value true
+        decay_is_same<int&&, int >::value true
+        decay_is_same<const int&&, int >::value true
 
 std::remove_reference
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -960,7 +1099,6 @@ std::remove_reference
 	std::remove_reference<T>::type;
 	std::remove_reference_t<T>;
 	
-
 
 If the type T is a reference type, 
 	provides the member typedef type which is the type referred to by T. 
@@ -1001,28 +1139,42 @@ std::declval
 	
 Utility function, produces:
 
-	- xvalue expression T&&
-	- If T is void, returns T
+- xvalue expression T&&
+- If T is void, returns T
 	
-Can be used with expression to return the expression’s reference type
+Can be used with expression to return the expression's reference type
 
 **Can return a non constructible or incomplete type**
 
 .. code:: cpp
 
-	struct Type {
-		int a;
-		int Foo() { return 42; }
+        #include <iostream>
 
-	   private:
-		Type() {}
-	};
+        struct Type {
+            int a;
+            int Foo() { return 42; }
 
-	int main() {
-		Type t;                          // CE
-		typeid(declval<Type>()).name();  // type
-	}
+           private:
+            Type() {}
+        };
 
+        int main() {
+            Type t;                          // CE
+            
+            typeid(std::declval<Type>()).name();  // type
+            std::cout   << "typeid(std::declval<Type>()).name() " 
+                        << typeid(std::declval<Type>()).name() << '\n';
+
+            return 0;
+        }
+
+Output::
+
+        (after commention 'Type t;' compilation error)
+
+        typeid(std::declval<Type>()).name() 4Type 
+
+        // NOTE: printed type is mangled name
 
 Combined with decltype, can get the type of a member (even when Type is non constructible)
 
@@ -1072,23 +1224,65 @@ std::is_same
 .. code :: cpp
 
 	std::is_same<T, U>::value;
-	std::is_same_v<T, U>::value;
+	std::is_same_v<T, U>;
 	
 Can be used to evaluate equality, including the value category of the expression
 
 .. code:: cpp
 
-	std::is_same_v<int, int>;			// true
-	std::is_same_v<int&, int>;			// false
-	std::is_same_v<decltype(a), int>;	// true
-	
-	template<typename T, typename U>
-	struct remove_reference_is_same : 
-			std::is_same<typename std::remove_reference_t<T>, U> 
-	{ };
-	
-	
+        #include <iostream>
 
+        template <typename T, typename U>
+        struct remove_reference_is_same
+            : std::is_same<typename std::remove_reference_t<T>, U>
+        { };
+
+        int main() {
+
+            std::cout << std::boolalpha;
+
+            int a = 7;
+
+            std::cout << "std::is_same_v<int, int> "
+                      << std::is_same_v<int, int> << '\n';  // true
+            std::cout << "std::is_same_v<int&, int> "
+                      << std::is_same_v<int&, int> << '\n';  // false
+            std::cout << "std::is_same_v<decltype(a), int> "
+                      << std::is_same_v<decltype(a), int> << '\n';  // true
+            std::cout << '\n';
+
+            std::cout << "remove_reference_is_same<int&, int >::value "
+                      << remove_reference_is_same<int&, int>::value << '\n';  // true
+            std::cout << "remove_reference_is_same<const int&, int >::value "
+                      << remove_reference_is_same<const int&, int>::value << '\n';  // false
+            std::cout << "remove_reference_is_same<const int&, const int >::value "
+                      << remove_reference_is_same<const int&, const int>::value << '\n';  // true
+            std::cout << '\n';
+
+            std::cout << "remove_reference_is_same<int&&, int >::value "
+                      << remove_reference_is_same<int&&, int>::value << '\n';  // true
+            std::cout << "remove_reference_is_same<const int&&, int >::value "
+                      << remove_reference_is_same<const int&&, int>::value << '\n';  // false
+            std::cout << "remove_reference_is_same<const int&&, const int >::value "
+                      << remove_reference_is_same<const int&&, const int>::value << '\n';  // true
+
+            return 0;
+        }
+
+
+Output::
+
+        std::is_same_v<int, int> true
+        std::is_same_v<int&, int> false
+        std::is_same_v<decltype(a), int> true
+
+        remove_reference_is_same<int&, int >::value true
+        remove_reference_is_same<const int&, int >::value false
+        remove_reference_is_same<const int&, const int >::value true
+
+        remove_reference_is_same<int&&, int >::value true
+        remove_reference_is_same<const int&&, int >::value false
+        remove_reference_is_same<const int&&, const int >::value true
 
 Advanced Utilities
 ^^^^^^^^^^^^^^^^^^^^
@@ -1114,6 +1308,9 @@ Functional helper, produces lvalue expression which can be used in same places a
 std::reference_wrapper provides extra safety of avoiding dangling reference
 
 can be used to create a container of objects of non-constructible or incomplete types
+
+|
+|
 
 std::ref and std::cref are often used to generate std::reference_wrapper objects
 
@@ -1162,7 +1359,7 @@ Function helper, takes an lvalue reference to object (overload (const) rvalue re
 
 Produces an object of type std::reference_type
 
-Sarting from C++20, T may be incomplete type
+**Since C++20, T may be incomplete type**
 
 
 .. code:: cpp
@@ -1272,8 +1469,11 @@ Concept is satisfied if:
 Concept is satisfied if:
 
 T is an object, which also satisfies 
+
 std::move_constructible<T>
+
 assignable_from<T& T> (using std::is_lvalue_reference, std::forward etc.)
+
 std::swappable<T>
 
 
@@ -1286,10 +1486,12 @@ Result is a prvalue of an object type(discards CV qualifier)
 
 can also be used combined with "decltype"
 
-int a = 42;		// lvalue (int)
-auto & b = a;	// lvalue (int&)
-auto c(b);		// lvalue (int&)
-auto(c);		// prvalue
+.. code:: cpp
+
+        int a = 42;	// lvalue (int)
+        auto & b = a;   // lvalue (int&)
+        auto c(b);	// lvalue (int&)
+        auto(c);	// prvalue
 
 
 Deducing this	(since C++23)
@@ -1325,33 +1527,35 @@ Combined with the forwarding reference, we can now write all these in a single t
 		auto fun(this Self self);
 	};
 
-"Deducing this" feature introduced two new utilities: like_t ` and forward_like <T>(u)`
-	like_t <T,U>
+"Deducing this" feature introduced two new utilities: 'like_t' and 'forward_like <T>(u)'
+
+**like_t <T,U>**
 	
-Applies CV and ref qualifiers of T onto U (introduced in P0847)
+Applies CV and ref qualifiers of T onto U (introduced in `P0847 <https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p0847r6.html>`_)
 
 .. code:: cpp
 
-	like_t<double&, int>			// int
-	like_t<const double&, int>		// const int&
-	like_t<double &&, int>			// int&&
-	like_t<const double &&, int>	// const int
+	like_t<double&, int>		// int
+	like_t<const double&, int>	// const int&
+	like_t<double &&, int>		// int&&
+	like_t<const double &&, int>    // const int
 
 forward_like<T>(u)	->	forward<like_t<T, decltype(u)>>(u)
 
-Forwards instance of type U with CV and ref qualifiers of T (introduced in P2445)
+Forwards instance of type U with CV and ref qualifiers of T (introduced in `P2445 <http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2445r0.pdf>`_)
 
 .. code:: cpp
 
 	int a = 5;
-	forward_like<double &>(a);			// int&
-	forward_like<const double &&>(a)	// const int&
+	forward_like<double &>(a);		// int&
+	forward_like<const double &&>(a);       // const int&
 
 
 References
 -----------
 
 `Back to Basics: Master C++ Value Categories With Standard Tools - Inbal Levi - CppCon 2022 <https://www.youtube.com/watch?v=tH0Z2OvHAd8>`_
+
 `Master Value Categories With Standard Tools - Inbal Levi - CppNow 2022 <https://www.youtube.com/watch?v=D52fZsQ9j4o>`_
 
 

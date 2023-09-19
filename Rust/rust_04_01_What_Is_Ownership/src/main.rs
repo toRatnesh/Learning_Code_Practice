@@ -1,5 +1,8 @@
 /*****
 
+References
+    https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html
+
 What Is Ownership?
 	set of rules to manage memory
 	Rust uses a new approach called Ownership: memory is managed through a system of ownership with a set of rules that the compiler checks.
