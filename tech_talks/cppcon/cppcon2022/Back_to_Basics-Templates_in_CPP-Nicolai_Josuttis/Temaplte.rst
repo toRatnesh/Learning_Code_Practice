@@ -506,7 +506,7 @@ We can define template class methods inside the class like inline functions
 		return 0;
 	}
 
-Ouptut:
+Ouptut::
 
 	st.pop() 2
 	st.pop() 3

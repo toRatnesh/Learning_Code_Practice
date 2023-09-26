@@ -55,7 +55,7 @@ int main() {
 	std::thread thr_02(display, "Updating shared data from thread-02");
 	
 	thr_01.join();
-    thr_02.join();
+	thr_02.join();
 	
     return 0;
 }

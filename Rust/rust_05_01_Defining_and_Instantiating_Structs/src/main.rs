@@ -15,6 +15,14 @@ Defining and Instantiating Structs
 		structs are more flexible than tuples
 		don’t have to rely on the order of the data to specify or access the values of an instance
 
+
+    Three types of structures:
+
+        1. Tuple structs, which are, basically, named tuples.
+        2. The classic C structs
+        3. Unit structs, which are field-less, are useful for generics.
+
+
 	Defining a struct
 		use keyword struct followed by struct name
 		fields: Then, inside curly brackets, we define the names and types of the pieces of data, which we call fields

@@ -56,7 +56,7 @@ fn fun_with_parm_and_ret(x : i32) -> i32 {
     y
 }
 
-pub fn main() {
+fn main() {
 
     println!("Inside main");
    

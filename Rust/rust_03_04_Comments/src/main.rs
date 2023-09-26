@@ -30,7 +30,7 @@ Documentation comment
     ///
     /// assert_eq!(6, answer);
     /// ```
-    pub fn add_one(x: i32) -> i32 {
+    fn add_one(x: i32) -> i32 {
         x + 1
     }
 
@@ -51,7 +51,7 @@ fn add_one(x: i32) -> i32 {
 }
 
 
-pub fn main() {
+fn main() {
 
     println!("=== Single line comment ===");
     // single line comment is written in this way
@@ -87,7 +87,7 @@ pub fn main() {
         ///
         /// assert_eq!(6, answer);
         /// ```
-        pub fn add_one(x: i32) -> i32 {{
+        fn add_one(x: i32) -> i32 {{
             x + 1
         }}
     ");

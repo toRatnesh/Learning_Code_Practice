@@ -37,14 +37,14 @@ std::unique_lock<std::mutex> update(std::string data) {
 }
 
 void reset(std::unique_lock<std::mutex> unq_lock_parm) {
-    std::unique_lock unq_lock(std::move(unq_lock_parm));
-    shared_data.clear();   
+	std::unique_lock unq_lock(std::move(unq_lock_parm));
+	shared_data.clear();   
 }
 
 void display(std::string data) {
 	std::unique_lock unq_lock(update(data));
 	std::cout << shared_data << '\n';
-    reset(std::move(unq_lock));
+	reset(std::move(unq_lock));
 }
 
 int main() {
@@ -53,7 +53,7 @@ int main() {
 	std::thread thr_02(display, "Updating shared data from thread-02");
 	
 	thr_01.join();
-    thr_02.join();
+	thr_02.join();
 	
     return 0;
 }

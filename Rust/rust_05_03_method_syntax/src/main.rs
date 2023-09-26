@@ -87,7 +87,7 @@ impl Rectangle {
 // Each struct is allowed to have multiple impl blocks
 impl Rectangle {
     
-    fn square(size: u32) -> Rectangle { // associated function
+    fn square(size: u32) -> Rectangle { 
         Rectangle {
             width: size,
             height: size,

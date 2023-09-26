@@ -122,7 +122,7 @@
 		
 **********/
 
-pub fn main() {
+fn main() {
 
     println!("=== integer type ===");
 	let u8_val : u8 = 5;

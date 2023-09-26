@@ -67,8 +67,9 @@ class EmptyStackException : std::exception {
 
 template<typename T>
 class ThreadSafeStack {
+
     std::stack<T> m_stack_data;
-    std::mutex m_stack_mutex;
+    mutable std::mutex m_stack_mutex;	// mutable to use in const member functions
 
     public:
     ThreadSafeStack() { }
@@ -77,19 +78,19 @@ class ThreadSafeStack {
         // in order to ensure that the mutex is held across the copy
         
         // copy constructor locks the mutex in the source object
-        std::lock_guard guard(other.m_stack_mutex); // ATTENTION: other.m_stack_mutex is used
+        const std::lock_guard guard(other.m_stack_mutex); // ATTENTION: other.m_stack_mutex is used
         m_stack_data = other.m_stack_data;
     }
 
     ThreadSafeStack& operator=(const ThreadSafeStack & other) = delete;
 
     void push(T value) {
-        std::lock_guard guard(m_stack_mutex);
+        const std::lock_guard guard(m_stack_mutex);
         m_stack_data.push(value);
     }
 
     std::shared_ptr<T> pop() {
-        std::lock_guard guard(m_stack_mutex);
+        const std::lock_guard guard(m_stack_mutex);
         if(m_stack_data.empty())  {
             throw EmptyStackException{};
         }
@@ -100,7 +101,7 @@ class ThreadSafeStack {
     }
 
     void pop(T & value) {
-        std::lock_guard guard(m_stack_mutex);
+        const std::lock_guard guard(m_stack_mutex);
         if(m_stack_data.empty())  {
             throw EmptyStackException{};
         }
@@ -109,8 +110,8 @@ class ThreadSafeStack {
         m_stack_data.pop();        
     }
 
-    bool empty() const {
-        std::lock_guard guard(m_stack_mutex);
+    bool is_empty() const {
+        const std::lock_guard guard(m_stack_mutex);
         return m_stack_data.empty();
     }
 
@@ -124,14 +125,16 @@ void reader(size_t elems) {
     for(size_t i = 0; i < elems; ++i) {
         
         try {
-            ret_val = *(thr_safe_stack.pop());
+		if(not thr_safe_stack.is_empty()) {
+			ret_val = *(thr_safe_stack.pop());
+			std::cout << "popped value is " << ret_val << '\n';
+		}
         } catch (const EmptyStackException & ex) {
             std::cout << ex.what() << '\n';
             continue;
         }
 
-        std::cout << "popped value is " << ret_val << '\n';
-        std::this_thread::sleep_for(std::chrono::nanoseconds(1));
+        std::this_thread::sleep_for(std::chrono::nanoseconds(100));
     }
 }
 
@@ -141,13 +144,14 @@ void reader_02(size_t elems) {
     for(size_t i = 0; i < elems; ++i) {
         
         try {
-            thr_safe_stack.pop(ret_val);
+		if(not thr_safe_stack.is_empty()) {
+			thr_safe_stack.pop(ret_val);
+			std::cout << "popped value is " << ret_val << '\n';
+		}
         } catch (const EmptyStackException & ex) {
             std::cout << ex.what() << '\n';
             continue;
         }
-        
-        std::cout << "popped value is " << ret_val << '\n';
 
         std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     }
