@@ -2,13 +2,14 @@
 
     References
         https://doc.rust-lang.org/book/ch03-02-data-types.html
-
+        https://doc.rust-lang.org/rust-by-example/primitives.html
+        https://doc.rust-lang.org/rust-by-example/types.html
 
     Rust is a statically typed language, which means that it must know the types of all variables at compile time
 
 	Rust Data Types
         1. Scalar types:	integer, floating, boolean, character
-        2. Compiund types:  tuple, array
+        2. Compound types:  tuple, array
 
     In cases when many types are possible, we must add a type annotation
 
@@ -118,8 +119,21 @@
 			
 		Invalid Array Element Access
 			 program resultes in a runtime error at the point of using an invalid value in the indexing operation
-			 
-		
+
+    Casting
+        No implicit type conversion (coercion) between primitive types
+        Explicit type conversion (casting) can be performed using the as keyword	 
+		The behavior of all casts between integral types is well defined in Rust
+
+    Inference
+        type inference look at the type of the value expression during an initialization
+        It also looks at how the variable is used afterwards to infer its type
+
+    Aliasing
+        type statement can be used to give a new name to an existing type
+        Types must have UpperCamelCase names, or the compiler will raise a warning
+        The exception to this rule are the primitive types: usize, f32, etc
+
 **********/
 
 fn main() {
@@ -170,7 +184,27 @@ fn main() {
     // error: this operation will panic at runtime
     // index out of bounds: the length is 5 but the index is 5
     //println!("{} ", arr[5]);
+    println!();
 
+    println!("=== casting ===");
+    let aint : i32  = 32;
+    //let auint : u32 = aint;     // error[E0308]: mismatched types
+    let auint : u32 = aint as u32;
+    println!("aint {aint} auint {auint}");
+    println!();
+
+    println!("=== inference ===");
+    let aval = 32;
+    let mut avec = Vec::new();  // vector of something (`Vec<_>`)
+    avec.push(aval);            // Vec<i32>
+    println!("{:?}", avec);
+    println!();
+
+    println!("=== aliasing ===");
+    type PortType = u32;
+    let port:PortType = 8005;
+    println!("port {port}");
+    
 }
 
 /*****

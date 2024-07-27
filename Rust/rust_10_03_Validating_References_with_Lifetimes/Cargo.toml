@@ -1,0 +1,6 @@
+[package]
+name = "rust_10_03_Validating_References_with_Lifetimes"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
