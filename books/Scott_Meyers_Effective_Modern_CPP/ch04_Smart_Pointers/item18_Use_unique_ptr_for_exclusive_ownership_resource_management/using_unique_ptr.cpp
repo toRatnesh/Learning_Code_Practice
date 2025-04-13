@@ -43,16 +43,6 @@ Variants
 shared pointer using unique pointer
 	std::unique_ptr easily and efficiently converts to a std::shared_ptr
 
-    ------------------------------------------------------------------------------------------------------
-    In C++11 and C++14 it is valid to construct a std::shared_ptr<T> from a std::unique_ptr<T[]>:
-
-    std::unique_ptr<int[]> arr(new int[1]);
-    std::shared_ptr<int> ptr(std::move(arr));
-    Since the shared_ptr obtains its deleter (a std::default_delete<T[]> object) from the std::unique_ptr, the array will be correctly deallocated.
-
-    This is no longer allowed in C++17. Instead the array form std::shared_ptr<T[]> should be used.
-    ------------------------------------------------------------------------------------------------------
-
 Summary
 • std::unique_ptr is a small, fast, move-only smart pointer for managing resources with exclusive-ownership semantics.
 • By default, resource destruction takes place via delete, but custom deleters can be specified. Stateful deleters and function pointers as deleters increase the size of std::unique_ptr objects.
@@ -80,6 +70,17 @@ void deleteStFun(St * pst) {
         pst = nullptr;
     }
 }
+
+class deleteFunctor {
+    public:
+    void operator()(St * pst) {
+        if(nullptr != pst) {
+            std::cout << "Deleting St pointer inside deleteStLambda\n";
+            delete pst;
+            pst = nullptr;
+        }
+    }
+};
 
 auto deleteStLambda = [](St * pst) {
     if(nullptr != pst) {
@@ -143,6 +144,13 @@ int main() {
 
     {   std::cout << "=== Using function pointer as custom deleter ===\n";
         std::unique_ptr<St, void(*)(St *)> lp{ new St{3}, deleteStFun};
+        std::cout << "Deref pointer, value is " << *lp << '\n';
+
+        std::cout << "Size of unique pointer is " << sizeof(lp) << '\n';
+    }
+    
+    {   std::cout << "=== Using functor as custom deleter ===\n";
+        std::unique_ptr<St, deleteFunctor> lp{ new St{3}, deleteFunctor{}};
         std::cout << "Deref pointer, value is " << *lp << '\n';
 
         std::cout << "Size of unique pointer is " << sizeof(lp) << '\n';
