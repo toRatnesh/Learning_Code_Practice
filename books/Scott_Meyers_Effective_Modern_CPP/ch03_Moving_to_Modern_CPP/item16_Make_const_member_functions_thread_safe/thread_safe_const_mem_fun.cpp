@@ -37,7 +37,8 @@ Summary
 #include <thread>
 #include <atomic>
 #include <mutex>
-
+#include <memory>
+#include <chrono>
 
 class Point {
     double  x;
@@ -50,7 +51,7 @@ class Point {
 
     Point(const double x, const double y) : x(x), y(y) { }
 
-    double distaceFromPoint(const Point & p = {0, 0})   {
+    double distaceFromPoint(const Point & p = {0, 0}) const  {
         ++count;
         ++acount;
         auto d = std::sqrt(((p.x - x) * (p.x - x)) + ((p.y - y) * (p.y - y)));
@@ -108,43 +109,33 @@ int main() {
     std::cout << '\n';
 
     {
-        Point p{3.0, 4.0};
-        Point p2{0.0, 0.0};
+        //const Point p{3.0, 4.0};
+	auto p = std::make_shared<Point>(3.0, 4.0);
+	//auto p2 = std::make_shared<Point>(3.0, 4.0);
+        static Point p2{0.0, 0.0};
 
-        { std::thread t(&Point::distaceFromPoint, std::ref(p), std::cref(p2));     t.detach(); }
-        { std::thread t(&Point::distaceFromPoint, std::ref(p), std::cref(p2));     t.detach(); }
-        { std::thread t(&Point::distaceFromPoint, std::ref(p), std::cref(p2));     t.detach(); }
-        { std::thread t(&Point::distaceFromPoint, std::ref(p), std::cref(p2));     t.detach(); }
-        { std::thread t(&Point::distaceFromPoint, std::ref(p), std::cref(p2));     t.detach(); }
+        { std::thread t(&Point::distaceFromPoint, p, std::cref(p2));     t.detach(); }
+        { std::thread t(&Point::distaceFromPoint, p, std::cref(p2));     t.detach(); }
+        { std::thread t(&Point::distaceFromPoint, p, std::cref(p2));     t.detach(); }
+        { std::thread t(&Point::distaceFromPoint, p, std::cref(p2));     t.detach(); }
+        { std::thread t(&Point::distaceFromPoint, p, std::cref(p2));     t.detach(); }
 
-        /*
-        const int thread_count = 100;
-        std::vector<std::thread>    vecth;
-
-        for(int i = 0; i < thread_count; ++i) {
-            vecth.push_back(std::thread(&Point::distaceFromPoint, std::ref(p), std::cref(p2)));
-        }
-
-        for(auto & th : vecth) {
-            th.detach();
-        };
-        */        
-
-        std::cout << "Count " << p.getCount() << '\n';
-        std::cout << "Atomic Count " << p.getAtomicCount() << '\n';
+        std::cout << "Count " << p->getCount() << '\n';
+        std::cout << "Atomic Count " << p->getAtomicCount() << '\n';
     }
     std::cout << '\n';
 
     {
-        Widget w;
-        { std::thread t(&Widget::magicValue, std::ref(w));     t.detach(); }
-        { std::thread t(&Widget::magicValue, std::ref(w));     t.detach(); }
-        { std::thread t(&Widget::magicValue, std::ref(w));     t.detach(); }
-        { std::thread t(&Widget::magicValue, std::ref(w));     t.detach(); }
-        { std::thread t(&Widget::magicValue, std::ref(w));     t.detach(); }
-
+        //Widget w;
+	auto w = std::make_shared<Widget>();
+        { std::thread t(&Widget::magicValue, w);     t.detach(); }
+        { std::thread t(&Widget::magicValue, w);     t.detach(); }
+        { std::thread t(&Widget::magicValue, w);     t.detach(); }
+        { std::thread t(&Widget::magicValue, w);     t.detach(); }
+        { std::thread t(&Widget::magicValue, w);     t.detach(); }
     }
 
+    std::this_thread::sleep_for(std::chrono::seconds(2));
 
     return 0;
 }
