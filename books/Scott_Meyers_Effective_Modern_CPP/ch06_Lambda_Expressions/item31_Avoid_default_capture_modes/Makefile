@@ -1,7 +1,6 @@
-
-CC     = g++ -Wall -Wextra -Wpedantic -Wconversion -g -std=c++14
-TARGET = Item31_Avoid_default_capture_modes
-SRC	   = Item31_Avoid_default_capture_modes.cpp
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=undefined,address,leak -fno-omit-frame-pointer -fsanitize-address-use-after-scope -std=c++14
+TARGET  = avoid_default_capture
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 

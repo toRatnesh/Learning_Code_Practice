@@ -1,7 +1,6 @@
-
-CC     = g++ -Wall -Wextra -Wpedantic -Wconversion -g -std=c++14
-TARGET = Item34_Prefer_lambdas_to_std_bind
-SRC	   = Item34_Prefer_lambdas_to_std_bind.cpp
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=undefined,address,leak -fno-omit-frame-pointer -fsanitize-address-use-after-scope -std=c++14 -lpthread
+TARGET  = prefer_lambdas_to_bind
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 

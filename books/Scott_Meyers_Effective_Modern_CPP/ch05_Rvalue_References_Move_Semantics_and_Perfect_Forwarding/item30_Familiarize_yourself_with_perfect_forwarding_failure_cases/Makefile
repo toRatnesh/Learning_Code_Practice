@@ -1,5 +1,5 @@
 CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=undefined,address,leak -fno-omit-frame-pointer -fsanitize-address-use-after-scope -std=c++14
-TARGET  = decltype_on_auto_universal_ref
+TARGET  = perfect_forwarding_failure_cases
 SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)

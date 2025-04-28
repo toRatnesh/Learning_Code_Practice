@@ -1,7 +1,6 @@
-
-CC     = g++ -Wall -Wextra -Wpedantic -Wconversion -g -std=c++14
-TARGET = Item32_Use_init_capture_to_move_objects_into_closures
-SRC	   = Item32_Use_init_capture_to_move_objects_into_closures.cpp
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=undefined,address,leak -fno-omit-frame-pointer -fsanitize-address-use-after-scope -std=c++14
+TARGET  = init_capture
+SRC     = $(TARGET).cpp
 
 ALL : $(TARGET)
 
