@@ -59,19 +59,19 @@ control block
 	Earlier discussed the reference count is part of a larger data structure known as the control block
 	There’s a control block for each object managed by std::shared_ptrs
 	
-	 _____________________					 _______________________
-	|	Ptr to T	   	  |-------------> 	|	T obj				|
-	|					  |					|-----------------------|
-	|---------------------|					 	Control Block
-	| Ptr to Control Block|				 	 _______________________
-	|_____________________|-------------->	|						|
-											|	Reference Count		|
-											|-----------------------|
-											|	Weak Count			|
-											|-----------------------|
-											|	Other data			|
-											|-----------------------|
-											|_______________________|
+	 _____________________			 _______________________
+	|	Ptr to T      |-------------> 	|	T obj		|
+	|		      |			 -----------------------
+	|---------------------|				Control Block
+	| Ptr to Control Block|			 _______________________
+	|_____________________|-------------->	|			|
+						|	Reference Count	|
+						|-----------------------|
+						|	Weak Count	|
+						|-----------------------|
+						|	Other data	|
+						|-----------------------|
+						|_______________________|
 											
 	An object’s control block is set up by the function creating the first std::shared_ptr to the object.
 	

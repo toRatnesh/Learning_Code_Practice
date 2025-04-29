@@ -19,11 +19,11 @@ shared state
 	We’ll begin with the observation that a future is one end of a communications channel 
 	through which a callee transmits a result to a caller.
 
-	 ----------------														 ----------------
-	|				 |	future									std::promise|				 |
-	|	Caller		 |<-----------------------------------------------------|	Callee		 |
-	|				 |											(typically) |				 |
-	 ----------------														 ----------------
+	 ----------------                                    ----------------
+	|                |future                std::promise|                |
+	|     Caller     |<---------------------------------|    Callee      |
+	|                |                      (typically) |                |
+	 ----------------                                    ----------------
 
 	But where is the callee’s result stored?
 	it’s stored in a location outside both caller and callee objects
@@ -32,12 +32,12 @@ shared state
 	its type, interface, and implementation are not specified by the Standard
 	Standard Library authors are free to implement shared states in any way they like
 	
-										Shared State
-	 ----------------					 -----------			     		    -----------------
-	|				 |	future			|Callee's	|			   std::promise|				 |
-	|	Caller		 |<-----------------|			|<-------------------------|	Callee		 |
-	|				 |					|Result		|				(typically)|				 |
-	 ----------------					 -----------						    -----------------
+					     Shared State
+	 ----------------                    -----------                            -----------------
+	|                |future            |Callee's   |              std::promise|                 |
+	|   Caller       |<-----------------|           |<-------------------------|    Callee       |
+	|                |                  |Result     |               (typically)|                 |
+	 ----------------                    -----------                            -----------------
 	
 	the behavior of a future’s destructor is determined by the shared state associated with the future
 	
