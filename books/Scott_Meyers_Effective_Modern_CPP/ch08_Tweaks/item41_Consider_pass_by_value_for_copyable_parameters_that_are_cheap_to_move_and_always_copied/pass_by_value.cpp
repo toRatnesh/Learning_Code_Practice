@@ -166,6 +166,24 @@ class UsingPassByvalue {
     }    
 };
 
+class Base {
+    public:
+    virtual void fun() { std::puts("Inside Base::fun()"); }
+};
+
+class Derived : public Base {
+    public:
+    virtual void fun() override { std::puts("Inside Derived::fun()"); }
+};
+
+void process(Base base) {
+    base.fun();
+}
+
+void process(Base * base) {
+    base->fun();
+}
+
 int main() {
     {   std::puts("=== using overload on lvalue and rvalue ===");
         UsingOverload   uobj;
@@ -186,6 +204,16 @@ int main() {
         St st;
         uobj.add(st);
         uobj.add(std::move(st));
+    }
+
+    {   std::puts("\n=== Slicing problem ===");
+        Base b;
+        process(b);
+        process(&b);
+
+        Derived d;
+        process(d);
+        process(&d);
     }
 
     return 0;
