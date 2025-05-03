@@ -47,7 +47,20 @@ shared state
 		(amounts to implicit detach on the underlying thread)
 		For deferred tasks for which this is the final future, it means that the deferred task will never run
 
-std::packaged_task		
+
+	The exception to this normal behavior arises only for a future for which all of the following apply:
+
+	•	It refers to a shared state that was created due to a call to std::async.
+	•	The task’s launch policy is std::launch::async
+	•	The future is the last future referring to the shared state
+		For std::shared_futures, if other std::shared_futures refer to the same shared state as the future being destroyed, 
+		the future being destroyed follows the normal behavior (i.e., it simply destroys its data members).
+
+	Only when all of these conditions are fulfilled does a future’s destructor exhibit special behavior, 
+	and that behavior is to block until the asynchronously running task completes.
+
+
+std::packaged_task	
 	std::packaged_task object prepares a function (or other callable object) for asynchronous execution 
 	by wrapping it such that its result is put into a shared state. 
 	A future referring to that shared state can then be obtained via std::packaged_task’s get_future function:

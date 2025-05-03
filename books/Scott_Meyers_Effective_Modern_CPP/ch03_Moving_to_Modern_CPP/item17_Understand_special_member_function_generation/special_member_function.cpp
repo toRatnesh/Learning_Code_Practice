@@ -141,34 +141,34 @@ Summary
 
 
                                     compiler implicitly declares
-    ==============================================================================================
+    ==============================================================================================================
     |			|default	|	destructor|  copy      |  copy       |   move      | move        |
-    |			|constructor|             | constructor| assignment  | constructor | assignment  |
-    ==============================================================================================
-    |	None	| defaulted | defaulted   | defaulted  | defaulted   |  defaulted  | defaulted   |
-    |			|           |             |            |             |             |             |
-    ----------------------------------------------------------------------------------------------
-    |	Any		|    X      | defaulted   | defaulted  | defaulted   |  defaulted  | defaulted   |
-    |Constructor|           |             |            |             |             |             |
-    ----------------------------------------------------------------------------------------------
-    | default	|    O      | defaulted   | defaulted  | defaulted   |  defaulted  | defaulted   |
-    |Constructor|           |             |            |             |             |             |
-    ----------------------------------------------------------------------------------------------
-    |destructor	| defaulted | 		O	  | defaulted  | defaulted   | 		X	   | 	X		 |
-    |			|           |             |(deprecated)|(deprecated) |             |             |
-    ----------------------------------------------------------------------------------------------
-    | Copy		| 	  X		| defaulted   | 	O	   | defaulted   |  	X	   | 	X		 |
-    |Constructor|           |             |            |(deprecated) |             |             |
-    ----------------------------------------------------------------------------------------------
-    | Copy		| defaulted | defaulted   | defaulted  | 	O	     |  	X	   | 	X		 |
-    |assignment |           |             |(deprecated)|			 |             |             |
-    ----------------------------------------------------------------------------------------------
-    | move		| 	  X		| defaulted   | deleted	   | deleted	 |  	O	   | 	X		 |
-    |Constructor|           |             |	 		   |			 |             |             |
-    --------------------------------------|--------------------------|----------------------------
-    | move		| defaulted | defaulted   | deleted    | deleted     |  	X	   | 	O		 |
-    |assignment |           |             |			   |			 |             |             |
-    ==============================================================================================
+    |			|constructor	|             	  | constructor| assignment  | constructor | assignment  |
+    ==============================================================================================================
+    |	None		| defaulted 	| defaulted   	  | defaulted  | defaulted   |  defaulted  | defaulted   |
+    |			|           	|             	  |            |             |             |             |
+    --------------------------------------------------------------------------------------------------------------
+    |	Any		|    X      	| defaulted   	  | defaulted  | defaulted   |  defaulted  | defaulted   |
+    |Constructor	|           	|             	  |            |             |             |             |
+    --------------------------------------------------------------------------------------------------------------
+    | default		|    O      	| defaulted   	  | defaulted  | defaulted   |  defaulted  | defaulted   |
+    |Constructor	|           	|             	  |            |             |             |             |
+    --------------------------------------------------------------------------------------------------------------
+    |destructor		| defaulted 	| 	O	  | defaulted  | defaulted   |	   X  	   |	X	 |
+    |			|           	|             	  |(deprecated)|(deprecated) |             |             |
+    --------------------------------------------------------------------------------------------------------------
+    | Copy		| 	  X	| defaulted   	  | 	O      | defaulted   |	   X  	   | 	X	 |
+    |Constructor	|           	|             	  |            |(deprecated) |             |             |
+    --------------------------------------------------------------------------------------------------------------
+    | Copy		| defaulted 	| defaulted   	  | defaulted  | 	O    |     X	   | 	X	 |
+    |assignment 	|           	|             	  |(deprecated)|	     |             |             |
+    --------------------------------------------------------------------------------------------------------------
+    | move		| 	  X	| defaulted   	  | deleted    | deleted     |	   O  	   | 	X	 |
+    |Constructor	|         	|             	  |	       |	     |             |             |
+    --------------------------------------------------------------------------------------------------------------
+    | move		| defaulted 	| defaulted   	  | deleted    | deleted     |     X	   | 	O	 |
+    |assignment 	|           	|             	  |	       |	     |             |             |
+    ==============================================================================================================
 
     X - Not declared
 
