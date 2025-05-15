@@ -5,41 +5,38 @@ References
 
 9 Advanced thread management
 
-We’ll look at mechanisms for managing threads and tasks, starting with
-the automatic management of the number of threads and the division of tasks
-between them.
-
+    We’ll look at mechanisms for managing threads and tasks, starting with the automatic 
+    management of the number of threads and the division of tasks between them
 
 9.1 Thread pools
 
-On most systems, it’s impractical to have a separate thread for every task that,
-can potentially be done in parallel with other tasks, but you’d still like to
-take advantage of the available concurrency where possible.
+    On most systems, it’s impractical to have a separate thread for every task that,
+    can potentially be done in parallel with other tasks, but you’d still like to
+    take advantage of the available concurrency where possible.
 
-A thread pool allows you to accomplish this; tasks that can be executed
-concurrently are submitted to the pool, which puts them on a queue of pending
-work. Each task is then taken from the queue by one of the worker threads, which
-executes the task before looping back to take another from the queue.
+    A thread pool allows you to accomplish this; tasks that can be executed
+    concurrently are submitted to the pool, which puts them on a queue of pending
+    work. Each task is then taken from the queue by one of the worker threads, which
+    executes the task before looping back to take another from the queue.
 
-design issues when building a thread pool, such as
-        how many threads to use,
-        the most efficient way to allocate tasks to threads, and
-        whether or not you can wait for a task to complete
+    design issues when building a thread pool, such as
+	    how many threads to use,
+	    the most efficient way to allocate tasks to threads, and
+	    whether or not you can wait for a task to complete
 
 9.1.2 Waiting for tasks submitted to a thread pool
-        With thread pools, you’d need to wait for the tasks submitted to the
-thread pool to complete, rather than the worker threads themselves. You can have
-the submit() function return a task handle of some description that you can then
-use to wait for the task to complete.
 
+    With thread pools, you’d need to wait for the tasks submitted to the
+    thread pool to complete, rather than the worker threads themselves
 
-        Because std::packaged_task<> instances are not copyable, just movable,
-you can no longer use std::function<> for the queue entries, Instead, you must
-use a custom function wrapper that can handle move-only types. This is a simple
-type-erasure class with a function call operator. You only need to handle
-functions that take no parameters and return void, so this is a straightforward
-virtual call in the implementation.
+    You can have the submit() function return a task handle of some description that you can then
+    use to wait for the task to complete.
 
+    Because std::packaged_task<> instances are not copyable, just movable,  you can no longer use std::function<> 
+    for the queue entries, Instead, you must use a custom function wrapper that can handle move-only types. 
+    
+    This is a simple type-erasure class with a function call operator. You only need to handle functions 
+    that take no parameters and return void, so this is a straightforward virtual call in the implementation.
 
 **********/
 
@@ -130,6 +127,8 @@ class thread_pool {
         using res_t = std::invoke_result_t<Func>;
         std::packaged_task<res_t()> task(std::move(callable));
         std::future<res_t> res(task.get_future());
+        //std::packaged_task task(std::move(callable));		// CTAD
+        //std::future res(task.get_future());			// CTAD
         m_queue.push(std::move(task));
         return res;
     }

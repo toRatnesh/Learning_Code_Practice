@@ -32,6 +32,12 @@ A simplest thread pool is
     there’s no way to wait for the task to complete
     If you need to do this, you have to manage the synchronization yourself
 
+For many purposes this simple thread pool will suffice, especially if the tasks are entirely independent 
+and don’t return any values or perform any blocking operations.
+But there are also many circumstances where this simple thread pool may not adequately address your needs, 
+and yet others where it can cause problems such as deadlock. 
+
+Also, in simple cases you may be better served using std::async
 
 **********/
 
@@ -79,9 +85,10 @@ class thread_pool {
 		const unsigned thread_count = std::thread::hardware_concurrency();
 		try {
 			for(unsigned i = 0; i < thread_count; ++i) {
-				m_threads.push_back(
-					std::jthread(&thread_pool::worker_thread, this)
-				);
+				//m_threads.push_back(
+				//	std::jthread(&thread_pool::worker_thread, this)
+				//);
+				m_threads.emplace_back(&thread_pool::worker_thread, this);
 			}	
 		} catch(...) {
 			m_done = true;

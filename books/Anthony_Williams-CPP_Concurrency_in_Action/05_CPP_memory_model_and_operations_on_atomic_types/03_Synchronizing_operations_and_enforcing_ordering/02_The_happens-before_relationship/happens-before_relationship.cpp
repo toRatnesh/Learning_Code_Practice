@@ -27,8 +27,12 @@ References
         data_ready=true;
     }
 
-    The required enforced ordering comes from the operations on the std::atomic<bool> variable, data_ready;, they provide the necessary ordering by virtue of the memory model relations happens-before and synchronizes-with.
-    Because happens-before is transitive, the write to the data happens before the write to the flag, which happens before the read of the true value from the flag, which happens before the read of the data, and you have an enforced ordering.
+    The required enforced ordering comes from the operations on the std::atomic<bool> variable, data_ready;, 
+    they provide the necessary ordering by virtue of the memory model relations happens-before and synchronizes-with.
+
+    Because happens-before is transitive, the write to the data happens before the write to the flag, 
+    which happens before the read of the true value from the flag, which happens before the read of the data, 
+    and you have an enforced ordering.
 
 5.3.2 The happens-before relationship
 
@@ -37,18 +41,24 @@ The happens-before and strongly-happens-before relationships
 	it specifies which operations see the effects of which other operations
 	
 For a single thread,
-	if one operation (A) occurs in a statement prior to another (B) in the source code, then A happens before B, and A strongly-happens-before B
+	if one operation (A) occurs in a statement prior to another (B) in the source code, 
+	then A happens before B, and A strongly-happens-before B
 	
 For multi thread,
 	if operation A in one thread synchronizes with operation B in another thread, then A inter-thread happens before B
-	It’s also a transitive relation: if A inter-thread happens before B and B inter-thread happens before C, then A inter-thread happens before C
+	It’s also a transitive relation: if A inter-thread happens before B and B inter-thread happens before C, 
+	then A inter-thread happens before C
 
 Inter-thread happens-before also combines with the sequenced-before relation:
-	if operation A is sequenced before operation B, and operation B inter-thread happens before operation C, then A inter-thread happens before C
+	if operation A is sequenced before operation B, and operation B inter-thread happens before operation C, 
+	then A inter-thread happens before C
+	
 	if A synchronizes with B and B is sequenced before C, then A inter-thread happens before C
 
 Strongly-happens-before relationship
-	if operation A synchronizes-with operation B, or operation A is sequenced-before operation B, then A strongly-happens-before B
+	if operation A synchronizes-with operation B, or operation A is sequenced-before operation B, 
+	then A strongly-happens-before B
+
 	Transitive ordering: if A strongly-happens before B, and B strongly-happens-before C, then A strongly-happens-before C
 
 Difference

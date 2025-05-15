@@ -27,8 +27,12 @@ References
         data_ready=true;
     }
 
-    The required enforced ordering comes from the operations on the std::atomic<bool> variable, data_ready;, they provide the necessary ordering by virtue of the memory model relations happens-before and synchronizes-with.
-    Because happens-before is transitive, the write to the data happens before the write to the flag, which happens before the read of the true value from the flag, which happens before the read of the data, and you have an enforced ordering.
+    The required enforced ordering comes from the operations on the std::atomic<bool> variable, data_ready;, 
+    they provide the necessary ordering by virtue of the memory model relations happens-before and synchronizes-with.
+
+    Because happens-before is transitive, the write to the data happens before the write to the flag, 
+    which happens before the read of the true value from the flag, which happens before the read of the data, 
+    and you have an enforced ordering.
 
 5.3.1 The synchronizes-with relationship
 
