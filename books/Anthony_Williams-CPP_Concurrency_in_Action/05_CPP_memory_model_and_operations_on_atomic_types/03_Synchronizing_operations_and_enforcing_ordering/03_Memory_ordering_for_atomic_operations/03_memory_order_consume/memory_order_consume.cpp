@@ -201,51 +201,70 @@ DATA DEPENDENCY WITH ACQUIRE-RELEASE ORDERING AND MEMORY_ORDER_CONSUME
 #include <vector>
 #include <chrono>
 #include <cassert>
+#include <string>
 
-std::atomic_int     data;
-std::atomic_bool    x_flag;
-std::atomic_bool    y_flag;
+struct Data {
+    int         ival;
+    std::string sval;
+};
 
-void set_x_then_y_flag() {
-    x_flag.store(true, std::memory_order_relaxed);
-    y_flag.store(true, std::memory_order_relaxed);
+std::atomic<Data *>     p_data;
+std::atomic<int>        diff_data;
+
+void create_data() {
+    Data * l_dp = new Data;
+    l_dp->ival    = 13;
+    l_dp->sval    = "sample string";
+
+    diff_data.store(15, std::memory_order_relaxed);
+    p_data.store(l_dp, std::memory_order_release);
 }
 
-void read_y_then_x() {
-    while(not y_flag.load(std::memory_order_relaxed)) {}
-    if(x_flag.load(std::memory_order_relaxed))
-        ++data;
+void use_data() {
+    Data * l_dp;
+    while(not (l_dp = p_data.load(std::memory_order_consume))) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+    assert(13 == l_dp->ival);
+    assert("sample string" == l_dp->sval);
+    assert(15 == diff_data.load(std::memory_order_relaxed));
+    
+    auto l_diff_data = diff_data.load(std::memory_order_relaxed);
+    std::cout << "Data : " << l_dp->ival << ", sval: " << l_dp->sval << '\n';
+
+    std::cout << "diff_data: " << l_diff_data << '\n';
 }
 
 int main() {
 
-    x_flag  = false;
-    y_flag  = false;
-    data    = 0;
-
-    std::thread th_setxy(set_x_then_y_flag);
-    std::thread th_readyx(read_y_then_x);
+    std::thread th_c(create_data);
+    std::thread th_u(use_data);
     
-    th_setxy.join();
-    th_readyx.join();
+    th_c.join();
+    th_u.join();
 
-    assert(data.load() != 0);
-    std::cout << "After threads completion data is " << data << '\n';
-    
     return 0;
 }
 
 /*****
 Explanation
 
-This time the assert can fire, because the load of x can read false, even though the load of y reads true 
-and the store of x happens before the store of y. 
+Even though the store to diff_data is sequenced before the store to p_data, and 
+the store to p_data is tagged memory_order_release, the load of p_data is tagged memory_order_consume.
 
-x and y are different variables, so there are no ordering guarantees relating to 
-the visibility of values arising from operations on each.
+This means that the store to p_data only happens before those expressions that are dependent on the value loaded from p_data.
+This means that the asserts on the data members of the Data structure (ival and sval) are guaranteed not to fire, 
+because the load of p_data carries a dependency to those expressions through the variable x. 
+
+On the other hand, the assert on the value of diff_data may or may not fire; this operation isn’t dependent
+on the value loaded from p_data, and so there’s no guarantee on the value that’s read.
+This is particularly apparent because it’s tagged with memory_order_relaxed.
 
 **********/
 
 /*****
     END OF FILE
 **********/
+
+
+

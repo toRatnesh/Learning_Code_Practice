@@ -208,11 +208,11 @@ std::atomic_bool    y_flag;
 
 void set_x_then_y_flag() {
     x_flag.store(true, std::memory_order_relaxed);
-    y_flag.store(true, std::memory_order_relaxed);
+    y_flag.store(true, std::memory_order_release);
 }
 
 void read_y_then_x() {
-    while(not y_flag.load(std::memory_order_relaxed)) {}
+    while(not y_flag.load(std::memory_order_acquire)) {}
     if(x_flag.load(std::memory_order_relaxed))
         ++data;
 }
@@ -238,14 +238,21 @@ int main() {
 /*****
 Explanation
 
-This time the assert can fire, because the load of x can read false, even though the load of y reads true 
-and the store of x happens before the store of y. 
+Eventually, the load from y, will see true as written by the store. 
+Because the store uses memory_order_release and the load uses memory_order_acquire,  the store synchronizes with the load.
+The store to x happens before the store to y because they’re in the same thread. 
+Because the store to y synchronizes with the load from y, the store to x also happens before the load from y 
+and by extension happens before the load from x. Thus, the load from x must read true, and the assert can’t fire.
 
-x and y are different variables, so there are no ordering guarantees relating to 
-the visibility of values arising from operations on each.
+If the load from y wasn’t in a while loop, this wouldn’t necessarily be the case; 
+the load from y might read false, in which case there’d be no requirement on the value read from x.
 
+In order to provide any synchronization, acquire and release operations must be paired up.
 **********/
 
 /*****
     END OF FILE
 **********/
+
+
+

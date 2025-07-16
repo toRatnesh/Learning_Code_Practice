@@ -206,14 +206,21 @@ std::atomic_int     data;
 std::atomic_bool    x_flag;
 std::atomic_bool    y_flag;
 
-void set_x_then_y_flag() {
-    x_flag.store(true, std::memory_order_relaxed);
-    y_flag.store(true, std::memory_order_relaxed);
+void set_x_flag() {
+    x_flag.store(true, std::memory_order_release);
+}
+void set_y_flag() {
+    y_flag.store(true, std::memory_order_release);
 }
 
+void read_x_then_y() {
+    while(not x_flag.load(std::memory_order_acquire)) {}
+    if(y_flag.load(std::memory_order_acquire))
+        ++data;
+}
 void read_y_then_x() {
-    while(not y_flag.load(std::memory_order_relaxed)) {}
-    if(x_flag.load(std::memory_order_relaxed))
+    while(not y_flag.load(std::memory_order_acquire)) {}
+    if(x_flag.load(std::memory_order_acquire))
         ++data;
 }
 
@@ -223,10 +230,14 @@ int main() {
     y_flag  = false;
     data    = 0;
 
-    std::thread th_setxy(set_x_then_y_flag);
+    std::thread th_setx(set_x_flag);
+    std::thread th_sety(set_y_flag);
+    std::thread th_readxy(read_x_then_y);
     std::thread th_readyx(read_y_then_x);
     
-    th_setxy.join();
+    th_setx.join();
+    th_sety.join();
+    th_readxy.join();
     th_readyx.join();
 
     assert(data.load() != 0);
@@ -238,14 +249,17 @@ int main() {
 /*****
 Explanation
 
-This time the assert can fire, because the load of x can read false, even though the load of y reads true 
-and the store of x happens before the store of y. 
+In this case the assert can fire (like in the relaxed-ordering case), because 
+it’s possible for both the load of x and the load of y to read false.
 
-x and y are different variables, so there are no ordering guarantees relating to 
-the visibility of values arising from operations on each.
+x and y are written by different threads, so the ordering from the release to the acquire 
+in each case has no effect on the operations in the other threads.
 
 **********/
 
 /*****
     END OF FILE
 **********/
+
+
+

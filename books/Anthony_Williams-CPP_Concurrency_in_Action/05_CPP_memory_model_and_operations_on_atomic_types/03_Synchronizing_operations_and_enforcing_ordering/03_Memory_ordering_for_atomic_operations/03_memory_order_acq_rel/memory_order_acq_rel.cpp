@@ -202,50 +202,70 @@ DATA DEPENDENCY WITH ACQUIRE-RELEASE ORDERING AND MEMORY_ORDER_CONSUME
 #include <chrono>
 #include <cassert>
 
-std::atomic_int     data;
-std::atomic_bool    x_flag;
-std::atomic_bool    y_flag;
+std::atomic_int     data[5];
+//std::atomic_bool    sync_set(false);
+//std::atomic_bool    sync_use(false);
 
-void set_x_then_y_flag() {
-    x_flag.store(true, std::memory_order_relaxed);
-    y_flag.store(true, std::memory_order_relaxed);
+std::atomic_int    sync_transitive(0);
+
+void set_data() {
+    data[0].store(1, std::memory_order_relaxed);
+    data[1].store(2, std::memory_order_relaxed);
+    data[2].store(3, std::memory_order_relaxed);
+    data[3].store(4, std::memory_order_relaxed);
+    data[4].store(5, std::memory_order_relaxed);
+
+    // sync_set.store(true, std::memory_order_release);
+    sync_transitive.store(1, std::memory_order_release);
 }
 
-void read_y_then_x() {
-    while(not y_flag.load(std::memory_order_relaxed)) {}
-    if(x_flag.load(std::memory_order_relaxed))
-        ++data;
+void sync_set_and_use() {
+
+    // while(not sync_set.load(std::memory_order_acquire));
+    // sync_use.store(true, std::memory_order_release);
+
+    int expected = 1;
+    while(not sync_transitive.compare_exchange_strong(expected, 2,
+                std::memory_order_acq_rel));
+    expected = 1;
+}
+
+void use_data() {
+    //while(not sync_use.load(std::memory_order_acquire));
+
+    while(not (sync_transitive.load(std::memory_order_acquire) == 2));
+
+    assert(1 == data[0].load(std::memory_order_relaxed));
+    assert(2 == data[1].load(std::memory_order_relaxed));
+    assert(3 == data[2].load(std::memory_order_relaxed));
+    assert(4 == data[3].load(std::memory_order_relaxed));
+    assert(5 == data[4].load(std::memory_order_relaxed));
+
+    std::cout << "data[0] " << data[0].load(std::memory_order_relaxed) << '\n';
+    std::cout << "data[1] " << data[1].load(std::memory_order_relaxed) << '\n';
+    std::cout << "data[2] " << data[2].load(std::memory_order_relaxed) << '\n';
+    std::cout << "data[3] " << data[3].load(std::memory_order_relaxed) << '\n';
+    std::cout << "data[4] " << data[4].load(std::memory_order_relaxed) << '\n';
+
 }
 
 int main() {
 
-    x_flag  = false;
-    y_flag  = false;
-    data    = 0;
-
-    std::thread th_setxy(set_x_then_y_flag);
-    std::thread th_readyx(read_y_then_x);
+    std::thread th_set_data(set_data);
+    std::thread th_syn_data(sync_set_and_use);
+    std::thread th_use_data(use_data);
     
-    th_setxy.join();
-    th_readyx.join();
-
-    assert(data.load() != 0);
-    std::cout << "After threads completion data is " << data << '\n';
+    th_set_data.join();
+    th_syn_data.join();
+    th_use_data.join();
     
     return 0;
 }
 
-/*****
-Explanation
-
-This time the assert can fire, because the load of x can read false, even though the load of y reads true 
-and the store of x happens before the store of y. 
-
-x and y are different variables, so there are no ordering guarantees relating to 
-the visibility of values arising from operations on each.
-
-**********/
 
 /*****
     END OF FILE
 **********/
+
+
+
