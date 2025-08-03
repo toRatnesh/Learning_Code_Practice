@@ -1,4 +1,4 @@
-CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=address,undefined  -g -std=c++17 -lpthread
+CC      = g++ -Wall -Wextra -Wpedantic -Wconversion  -fsanitize=undefined,address,leak  -g -std=c++17 -lpthread
 TARGET  = thread_safe_stack
 SRC     = $(TARGET).cpp
 

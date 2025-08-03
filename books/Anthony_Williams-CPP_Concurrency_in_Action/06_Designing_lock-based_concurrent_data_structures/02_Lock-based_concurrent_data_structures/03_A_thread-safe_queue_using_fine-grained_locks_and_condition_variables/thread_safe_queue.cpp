@@ -41,242 +41,287 @@ References
     This will increase the number of calls to try_pop() that can happen concurrently; 
     only one thread can call pop_head() at a time, but multiple threads can then delete their old nodes and return the data safely.
 
+    wait_and_pop() is more complicated, because you have to decide where to wait,
+    If you make the predicate head!=get_tail(), you only need to hold head_mutex, 
+    so you can use your lock on that for the call to data_cond.wait(). 
+    Once you’ve added the wait logic, the implementation is the same as try_pop().
 
 **********/
 
 #include <iostream>
-#include <queue>
 #include <mutex>
-#include <exception>
 #include <memory>
 #include <vector>
 #include <string>
 #include <thread>
 #include <condition_variable>
 #include <syncstream>
+#include <vector>
+#include <future>
+#include <iomanip>
+
+#define VERIFY_PRINT(C) std::cout << "Assertion failed " << std::quoted(C) << '\n';
+
+#define VERIFY(...) if(not(__VA_ARGS__)) { VERIFY_PRINT(#__VA_ARGS__); }
+
 
 template<typename T>
-class thsafe_queue {
-
-    struct Node {
-        std::shared_ptr<T>      m_data;
+class ThreadSafeQueue {
+    struct  Node
+    {
+        std::unique_ptr<T>      m_data;
         std::unique_ptr<Node>   m_next;
-
     };
 
-    std::unique_ptr<Node>   m_head;
-    Node *                  m_tail;
+    std::unique_ptr<Node>       m_head;
+    Node *                      m_tail;
 
-    std::mutex              m_mutex_head;
-    std::mutex              m_mutex_tail;
-    std::condition_variable m_condv;
-
-    Node * get_tail() {
-        const std::lock_guard    l_tail_lock(m_mutex_tail);
+    std::mutex                  m_head_mutex;
+    std::mutex                  m_tail_mutex;
+    std::condition_variable     m_data_cond;
+    
+    Node * getTail() {
+        const std::lock_guard l_tail_lock{m_tail_mutex};
         return m_tail;
     }
 
-    std::unique_ptr<Node> pop_head() {
-        auto l_head = std::move(m_head);
-        m_head = std::move(l_head->m_next);
-        return l_head;                
+    std::unique_ptr<Node> popHead() {
+        std::unique_ptr<Node> l_old_head = std::move(m_head);
+        m_head = std::move(l_old_head->m_next);
+        
+        return l_old_head;
     }
 
-    std::unique_ptr<Node> try_pop_head() {
-        const std::lock_guard       l_head_lock(m_mutex_head);
-        if(m_head.get() == get_tail()) {
+    std::unique_ptr<Node> tryPopHead() {
+        const std::lock_guard l_head_lock{m_head_mutex};
+        if(m_head.get() == getTail()) {
             return std::unique_ptr<Node>();
         }
-        return pop_head();
+
+        return popHead();
     }
 
-    std::unique_ptr<Node> try_pop_head(T & val) {
-        const std::lock_guard       l_head_lock(m_mutex_head);
-        if(m_head.get() == get_tail()) {
+    std::unique_ptr<Node> tryPopHead(T & value) {
+        const std::lock_guard l_head_lock{m_head_mutex};
+        if(m_head.get() == getTail()) {
             return std::unique_ptr<Node>();
         }
-        val = std::move(*(m_head->m_data));
-        return pop_head();
-    }
+        
+        value = std::move(*(m_head->m_data));
+
+        return popHead();
+    }    
 
     std::unique_lock<std::mutex> wait_for_data() {
-        std::unique_lock        l_head_lock(m_mutex_head);
-        m_condv.wait(l_head_lock, [&](){return m_head.get() != get_tail();});
+        std::unique_lock l_head_lock{m_head_mutex};
+        m_data_cond.wait(l_head_lock, [&](){ m_head.get() != getTail(); });
+
         return std::move(l_head_lock);
     }
 
     std::unique_ptr<Node> wait_and_pop_head() {
-        std::unique_lock        l_head_lock(wait_for_data());
-        return pop_head();
+        std::unique_lock l_head_lock{wait_for_data()};
+        return popHead();
     }
 
-    std::unique_ptr<Node> wait_and_pop_head(T & val) {
-        std::unique_lock        l_head_lock(wait_for_data());
-        val = std::move(*(m_head->m_data));
-        return pop_head();
+    std::unique_ptr<Node> wait_and_pop_head(T & value) {
+        std::unique_lock l_head_lock{wait_for_data()};
+        value = std::move(*(m_head->m_data));
+        return popHead();
+    }    
+
+
+    public:
+
+    ThreadSafeQueue() : m_head{std::make_unique<Node>()}, m_tail{m_head.get()} {
+
     }
 
-public:
-    thsafe_queue() : m_head(std::make_unique<Node>()) , m_tail(m_head.get()) {}
-
-    thsafe_queue(const thsafe_queue &)              = delete;
-    thsafe_queue& operator=(const thsafe_queue &)   = delete;
-    
-    bool empty() {
-        const std::lock_guard    l_head_lock(m_mutex_head);
-        if (m_head.get() == get_tail()) {
-            return true;
-        }
-        return false;
-    }
+    ThreadSafeQueue(const ThreadSafeQueue &)    = delete;
+    ThreadSafeQueue & operator=(const ThreadSafeQueue &)    = delete;
 
     void push(T val) {
-        auto l_data = std::make_shared<T>(std::move(val));
-        auto l_node = std::make_unique<Node>();
-        auto l_tail         = l_node.get();
+        std::unique_ptr<T>      l_data          = std::make_unique<T>(std::move(val));
+        std::unique_ptr<Node>   l_dummy_node    = std::make_unique<Node>();
+                        Node *  l_new_tail      = l_dummy_node.get();
+
         {
-            const std::lock_guard      l_tail_lock(m_mutex_tail);
-            m_tail -> m_data    = l_data;
-            m_tail -> m_next    = std::move(l_node);
-            m_tail              = l_tail;
+            const std::lock_guard l_tail_lock{m_tail_mutex};
+            m_tail->m_data = std::move(l_data);
+            m_tail->m_next = std::move(l_dummy_node);
+            m_tail = l_new_tail;
         }
-        m_condv.notify_one();
-    }
+        m_data_cond.notify_one();
 
-    std::shared_ptr<T> try_pop() {
-        /*
-        const std::lock_guard       l_head_lock(m_mutex_head);
-        if(m_head.get() == get_tail()) {
-            std::shared_ptr<T>();
-        }
-        */
-
-        /*
-            auto l_head = std::move(m_head);
-            m_head = std::move(l_head->next);
-        */
-
-        auto l_head = try_pop_head();
-        return l_head ? (l_head->m_data) : std::shared_ptr<T>();
-    }
-
-    bool try_pop(T & val) {
-        /*
-        const std::lock_guard       l_head_lock(m_mutex_head);
-        if(m_head.get() == get_tail()) {
-            std::shared_ptr<T>();
-        }
-        */
-
-        // auto l_head = std::move(m_head);
-        // m_head = std::move(l_head->next);
-
-        const auto l_head = try_pop_head(val);
-        return l_head ? true : false;
-    }
-
-    std::shared_ptr<T> wait_and_pop() {
-        /*
-        const std::unique_lock        l_head_lock(m_mutex_head);
-        m_condv.wait(l_head_lock, [&](){return m_head.get() != get_tail();});
-        */
-
-        // auto l_head = std::move(m_head);
-        // m_head = std::move(l_head->next);
-
-        auto l_head = wait_and_pop_head();
-        return l_head->m_data;
-    }
-
-    void wait_and_pop(T & val) {
-        /*
-        const std::unique_lock        l_head_lock(m_mutex_head);
-        m_condv.wait(l_head_lock, [&](){return m_head.get() != get_tail();});
-        */
-
-        // auto l_head = std::move(m_head);
-        // m_head = std::move(l_head->next);
-
-        auto l_head = wait_and_pop_head(val);
         return ;
     }
+
+    std::unique_ptr<T> try_pop() {
+        std::unique_ptr<Node> l_old_head{tryPopHead()};
+        return l_old_head ? std::move(l_old_head->m_data) : std::unique_ptr<T>();
+    }
+
+    bool try_pop(T & value) {
+
+        /* FOLLWING IS WRONG CODE BECAUSE IN CASE OF EXCEPTION THROWN IN COPY ASSIGNEMENT QUEUE HAS BEEN MODIFIED
+        std::unique_ptr<Node> l_old_head{popHead()};
+        value = std::move(*(l_old_head->m_data));
+        return l_old_head;
+        */
+
+        std::unique_ptr<Node> l_old_head{tryPopHead(value)};
+        return l_old_head;
+    }
+
+    bool empty() {
+        const std::lock_guard l_head_lock{m_head_mutex};
+        return (m_head.get() == getTail());
+    }
+
+
+    std::unique_ptr<T> wait_and_pop() {
+        /*
+        {
+            std::unique_lock l_head_lock{wait_for_data()};
+            std::unique_ptr<Node> l_old_head = popHead();
+        }
+        */
+
+        const std::unique_ptr<Node> l_old_head = wait_and_pop_head();
+        return l_old_head->m_data;
+    }
+
+    void wait_and_pop(T & value) {
+        /*
+        {
+            std::unique_lock l_head_lock{wait_for_data};
+            value = std::move(*(m_head->m_data));
+            popHead();
+        }
+        */
+        const std::unique_ptr<Node> l_old_head = wait_and_pop_head(value);
+        return ;
+    }    
+
+    /*  WITHOUT REFACTORING
+
+    std::unique_ptr<T> pop() {
+        std::unique_ptr<Node> l_old_head{nullptr};
+        {
+            const std::lock_guard l_head_lock{m_head_mutex};
+            {
+                const std::lock_guard l_tail_lock{m_tail_mutex};
+                if(m_head.get() == m_tail) {
+                    return std::unique_ptr<T>();
+                }
+            }
+            
+            l_old_head = std::move(m_head);
+            m_head = std::move(l_old_head->m_next);
+        }
+        return std::move(l_old_head->m_data);
+    }
+    
+
+    bool empty() {
+        const std::lock_guard l_head_lock{m_head_mutex};
+        const std::lock_guard l_tail_lock{m_tail_mutex};
+        return (m_head.get() == m_tail);
+    }    
+    */
 
 };
 
 
-thsafe_queue<std::string> gqueue;
-std::osyncstream syn_cout(std::cout);
+ThreadSafeQueue<int> gqueue;
 
-void read_try_pop_using_ref(std::size_t count) {
-    std::string res;
-    for (std::size_t i = 0; i < count; ++i) {
-        bool ret = gqueue.try_pop(res);
-        if (ret) {
-            syn_cout << "try_pop(&), Popped value is " << res << '\n';
-        } else {
-            syn_cout << "Queue is empty\n";
-        }
+int reader(const std::size_t count, const bool pop_using_val)
+{
+    int result = 0;
+
+    for (std::size_t i = 0; i < count; ++i)
+    {
+            if (pop_using_val)
+            {
+                const auto val = gqueue.try_pop();
+                //std::cout << "Popped value " << *val << '\n';
+                result += (*val);
+            }
+            /*
+            else
+            {
+                int val = 0;
+                gqueue.pop(val);
+                //std::cout << "Popped value " << val << '\n';
+                result += val;
+            }
+            */
+        
     }
+
+    return result;
 }
 
-void read_try_pop(std::size_t count) {
-    for (std::size_t i = 0; i < count; ++i) {
-        const auto res = gqueue.try_pop();
-        if (res) {
-            syn_cout << "try_pop(), Popped value is " << *res << '\n';
-        } else {
-            syn_cout << "Queue is empty\n";
-        }
+int writer(int count)
+{
+    int result = 0;
+
+    for (int i = 0; i < count; ++i)
+    {
+        gqueue.push(i);
+
+        result += i;
     }
+
+    return result;
 }
 
-void read_wait_pop_using_ref(std::size_t count) {
-    std::string res;
-    for (std::size_t i = 0; i < count; ++i) {
-        if (not gqueue.empty()) {
-            gqueue.wait_and_pop(res);
-            syn_cout << "wait_and_pop(&), Popped value is " << res << '\n';
-        } else {
-            syn_cout << "Queue is empty\n";
-        }
+int main()
+{
+    constexpr int count = 100;
+    int expected_result = 0;
+
+    for (int i = 0; i < count; ++i)
+    {
+        expected_result += i;
     }
-}
+    std::cout << "Expected result is " << expected_result << '\n';
 
-void read_wait_pop(std::size_t count) {
-    for (std::size_t i = 0; i < count; ++i) {
-        const auto res = gqueue.wait_and_pop();
-        if (res) {
-            syn_cout << "wait_and_pop(), Popped value is " << *res << '\n';
-        } else {
-            syn_cout << "Queue is empty\n";
-        }
+    constexpr int thread_count = 1;
+
+
+    std::vector<std::future<int>> l_writer_results;
+    for (int i = 0; i < thread_count; ++i)
+    {
+        l_writer_results.push_back(std::async(std::launch::async, writer, count / thread_count));
     }
-}
+    l_writer_results.push_back(std::async(std::launch::async, writer, count % thread_count));
 
-void writer(std::size_t count) {
-    for (std::size_t i = 0; i < count; ++i) {
-        gqueue.push(std::string("string-") + std::to_string(i));
+
+    std::vector<std::future<int>> l_reader_results;
+    for (int i = 0; i < thread_count; ++i)
+    {
+        l_reader_results.push_back(std::async(std::launch::async, reader, count / thread_count, true));
     }
-}
-
-int main() {
-
-    std::size_t count = 20;
-
-    std::vector<std::thread> vecth;
-
-    vecth.push_back(std::thread(writer, count));
-    
-    vecth.push_back(std::thread(read_wait_pop_using_ref, count / 4));
-    vecth.push_back(std::thread(read_wait_pop, count / 4));
-
-    vecth.push_back(std::thread(read_try_pop_using_ref, count / 4));
-    vecth.push_back(std::thread(read_try_pop, count / 4));
+    l_reader_results.push_back(std::async(std::launch::async, reader, count % thread_count, false));
 
 
-    for(auto & th : vecth) {
-        th.join();
+    int writer_result = 0;
+    for (auto &l_temp_result : l_writer_results)
+    {
+        writer_result += l_temp_result.get();
     }
+    std::cout << "Result from writer is " << writer_result << '\n';
+
+    int reader_result = 0;
+    for (auto &l_temp_result : l_reader_results)
+    {
+        reader_result += l_temp_result.get();
+    }
+
+    std::cout << "Result from reader is " << reader_result << '\n';
+
+    VERIFY(reader_result == writer_result);
 
     return 0;
 }
@@ -284,5 +329,4 @@ int main() {
 /*****
     END OF FILE
 **********/
-
 
