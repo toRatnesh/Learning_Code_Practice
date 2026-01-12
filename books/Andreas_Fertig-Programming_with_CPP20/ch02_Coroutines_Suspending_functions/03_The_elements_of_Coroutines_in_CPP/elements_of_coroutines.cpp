@@ -1,24 +1,18 @@
 /*******
 
-References
-
-    Programming with C++20 | Andreas Fertig
-	https://en.cppreference.com/w/cpp/language/coroutines
-
-
 Chapter 2 | Coroutines: Suspending functions
 
-    A coroutine is a function that can suspend itself.
+A coroutine is a function that can suspend itself.
 
 2.3 The elements of Coroutines in C++
 
-    2.3.1 Stackless Coroutines in C++
-    2.3.2 The new kids on the block: co_await, co_return and co_yield
-    2.3.3 The generator
-    2.3.4 The promise_type
-    2.3.5 An iterator for generator
-    2.3.6 Coroutine customization points
-    2.3.7 Coroutines restrictions
+2.3.1 Stackless Coroutines in C++
+2.3.2 The new kids on the block: co_await, co_return and co_yield
+2.3.3 The generator
+2.3.4 The promise_type
+2.3.5 An iterator for generator
+2.3.6 Coroutine customization points
+2.3.7 Coroutines restrictions
 
 
 2.3.1 Stackless Coroutines in C++
@@ -76,25 +70,25 @@ Chapter 2 | Coroutines: Suspending functions
 		friend promise_type;
 
 		explicit generator(promise_type* p)
-			: mCoroHdl{PromiseTypeHandle::from_promise(*p)} {}
+			: m_coro_hdl{PromiseTypeHandle::from_promise(*p)} {}
 
-		PromiseTypeHandle mCoroHdl;     // E - The coroutine handle
+		PromiseTypeHandle m_coro_hdl;     // E - The coroutine handle
 
 	public:
 
 		// B- Make the generator iterable
 		using iterator = coro_iterator::iterator<promise_type>;
-		iterator begin() { return {mCoroHdl}; }
+		iterator begin() { return {m_coro_hdl}; }
 		iterator end() { return {}; }
 
 		generator(generator const&) = delete;
 		generator(generator&& rhs)
-			: mCoroHdl(std::exchange(rhs.mCoroHdl, nullptr)) {}
+			: m_coro_hdl(std::exchange(rhs.m_coro_hdl, nullptr)) {}
 
 		~generator() {
 			// C - We have to maintain the life - time of the coroutine
-			if (mCoroHdl) {
-				mCoroHdl.destroy();
+			if (m_coro_hdl) {
+				m_coro_hdl.destroy();
 			}
 		}
 
@@ -129,11 +123,11 @@ Chapter 2 | Coroutines: Suspending functions
 
 	template <typename T, typename G>
 	struct promise_type_base {
-		T mValue;                           // A - The value yielded or returned from a coroutine
+		T m_value;                           // A - The value yielded or returned from a coroutine
 
 		auto yield_value(T value)           // B - Invoked by co_yield or co_return 
 		{
-			mValue = std::move(value);      // C - Store the yielded value for access outside the coroutine
+			m_value = std::move(value);      // C - Store the yielded value for access outside the coroutine
 			return std::suspend_always{};   // D - Suspend the coroutine here
 		}
 
@@ -167,21 +161,21 @@ Chapter 2 | Coroutines: Suspending functions
 	namespace coro_iterator {
 		template <typename PT>
 		struct iterator {
-			std::coroutine_handle<PT> mCoroHdl{nullptr};
+			std::coroutine_handle<PT> m_coro_hdl{nullptr};
 
 			void resume() {
-				if (not mCoroHdl.done()) {
-					mCoroHdl.resume();
+				if (not m_coro_hdl.done()) {
+					m_coro_hdl.resume();
 				}
 			}
 
 			iterator() = default;
-			iterator(std::coroutine_handle<PT> hco) : mCoroHdl{hco} { resume(); }
+			iterator(std::coroutine_handle<PT> hco) : m_coro_hdl{hco} { resume(); }
 
 			void operator++() { resume(); }
-			bool operator==(const iterator&) const { return mCoroHdl.done(); }
+			bool operator==(const iterator&) const { return m_coro_hdl.done(); }
 
-			const auto& operator*() const { return mCoroHdl.promise().mValue; }
+			const auto& operator*() const { return m_coro_hdl.promise().m_value; }
 		};
 	}  // namespace coro_iterator
 	
@@ -201,10 +195,8 @@ Chapter 2 | Coroutines: Suspending functions
 	However, the coroutine will, of course, not run.
 	Instead, such a coroutine looks like it has already finished.
 	
-	
 	unhandled_exception is described in section "2.9 Exceptions in coroutines"
 
-	
 2.3.7 Coroutines restrictions
 
 	.	constexpr and consteval functions cannot be coroutines
@@ -220,38 +212,43 @@ Chapter 2 | Coroutines: Suspending functions
 
 *******/
 
+#include <iostream>
+#include <format>
+
 #include <coroutine>
 #include <exception>
 #include <utility>
 
 namespace coro_iterator {
+
     template <typename PT>
     struct iterator {
-        std::coroutine_handle<PT> mCoroHdl{nullptr};
+        std::coroutine_handle<PT> m_coro_hdl{nullptr};
 
         void resume() {
-            if (not mCoroHdl.done()) {
-                mCoroHdl.resume();
+            if (not m_coro_hdl.done()) {
+                m_coro_hdl.resume();
             }
         }
 
         iterator() = default;
-        iterator(std::coroutine_handle<PT> hco) : mCoroHdl{hco} { resume(); }
+        iterator(std::coroutine_handle<PT> hco) : m_coro_hdl{hco} { resume(); }
 
         void operator++() { resume(); }
-        bool operator==(const iterator&) const { return mCoroHdl.done(); }
+        bool operator==(const iterator&) const { return m_coro_hdl.done(); }
 
-        const auto& operator*() const { return mCoroHdl.promise().mValue; }
+        const auto& operator*() const { return m_coro_hdl.promise().m_value; }
     };
+
 }  // namespace coro_iterator
 
 template <typename T, typename G>
 struct promise_type_base {
-    T mValue;  // A - The value yielded or returned from a coroutine
+    T m_value;  // A - The value yielded or returned from a coroutine
 
     auto yield_value(T value)  // B - Invoked by co_yield or co_return
     {
-        mValue = std::move(value);     // C - Store the yielded value for access
+        m_value = std::move(value);     // C - Store the yielded value for access
                                        // outside the coroutine
         return std::suspend_always{};  // D - Suspend the coroutine here
     }
@@ -268,40 +265,65 @@ struct promise_type_base {
 
 template <typename T>
 class generator {
-    using promise_type =
-        promise_type_base<T, generator>;  // A - The PromiseType
+
+    public:
+    using promise_type = promise_type_base<T, generator>;  // A - The PromiseType
     using PromiseTypeHandle = std::coroutine_handle<promise_type>;
 
     // D - As the default ctor is private promise_type needs to be a friend
     friend promise_type;
 
+    private:
     explicit generator(promise_type* p)
-        : mCoroHdl{PromiseTypeHandle::from_promise(*p)} {}
+        : m_coro_hdl{PromiseTypeHandle::from_promise(*p)} {}
 
-    PromiseTypeHandle mCoroHdl;  // E - The coroutine handle
+    PromiseTypeHandle m_coro_hdl;  // E - The coroutine handle
 
    public:
     // B- Make the generator iterable
     using iterator = coro_iterator::iterator<promise_type>;
-    iterator begin() { return {mCoroHdl}; }
+    iterator begin() { return {m_coro_hdl}; }
     iterator end() { return {}; }
 
     generator(generator const&) = delete;
     generator(generator&& rhs)
-        : mCoroHdl(std::exchange(rhs.mCoroHdl, nullptr)) {}
+        : m_coro_hdl(std::exchange(rhs.m_coro_hdl, nullptr)) {}
 
     ~generator() {
         // C - We have to maintain the life - time of the coroutine
-        if (mCoroHdl) {
-            mCoroHdl.destroy();
+        if (m_coro_hdl) {
+            m_coro_hdl.destroy();
         }
     }
 };
 
-int main() { 
+using int_generator = generator<int>;
+
+int_generator counter(const int start, const int end) {
+    
+    int val{start};
+
+    while(val < end) {
+        co_yield val;
+        ++val;
+    }
+
+}
+
+int main() {
+
+    auto cg = counter(0, 10);
+
+    for(auto c : cg) {
+        std::cout << std::format("counter value: {}\n", c);
+    }
+
+
     return 0;
+
 }
 
 /*****
     END OF FILE
 **********/
+

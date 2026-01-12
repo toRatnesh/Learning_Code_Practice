@@ -8,10 +8,6 @@ References
 
 Chapter 2 | Coroutines: Suspending functions
 
-A coroutine is a function that can suspend itself.
-
-Chapter 2 | Coroutines: Suspending functions
-
     A coroutine is a function that can suspend itself.
 
 2.2 What are Coroutines
@@ -21,20 +17,20 @@ Chapter 2 | Coroutines: Suspending functions
     In contrast to that, a coroutine can suspend itself and return to the caller.
     This can happen multiple times and a coroutine is also able to call another coroutine.
 
-            function												coroutine
-        -------------------------------------                 ----------------------------------------------
-    |	                          return |               |      co_yield         co_return              |
-    |    --------->--------------         |               |      --->----         --->----               |
-        ---|------------------------|--------                 -----|--------|-------|--------|--------------
-        ^                        |                              ^        |       |        |
-        |                        |                              |        |       |        |
-        ---|------------------------|--------                 -----|--------|-------|--------|--------------
-    |   |                        |        |               |     |         --->---          ------>       |
-    |  call 	                     ->      |               |   call                                       |
-        -------------------------------------                  ---------------------------------------------
-            caller													caller
-        
-        
+		function												coroutine
+    -------------------------------------                 ----------------------------------------------
+   |	                          return |               |      co_yield         co_return              |
+   |    --------->--------------         |               |      --->----         --->----               |
+    ---|------------------------|--------                 -----|--------|-------|--------|--------------
+	   ^                        |                              ^        |       |        |
+	   |                        |                              |        |       |        |
+    ---|------------------------|--------                 -----|--------|-------|--------|--------------
+   |   |                        |        |               |     |         --->---          ------>       |
+   |  call 	                     ->      |               |   call                                       |
+    -------------------------------------                  ---------------------------------------------
+		caller													caller
+	
+	
 2.2.1 Generating a sequence with coroutines
 
     we can use coroutines to suspend and resume them.
@@ -66,8 +62,6 @@ Chapter 2 | Coroutines: Suspending functions
 
 **********/
 
-#include <iostream>
-
 int main() {
 
 	return 0;
@@ -76,3 +70,5 @@ int main() {
 /*****
     END OF FILE
 **********/
+
+

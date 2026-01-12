@@ -38,7 +38,7 @@ Chapter 2 | Coroutines: Suspending functions
         we have no way to reset the internal value of counter
         Even if we would add some kind of reset mechanism, counter will never be usable in a multi-threading context
 
-            
+	
     Ideally, the algorithm’s generator could just be resumed where it was suspended, keeping its state. 
     We could also spawn thousands of instances of the same generator, 
     each of them starting at the same initial value, and keeping track of its own state.
@@ -48,8 +48,37 @@ Chapter 2 | Coroutines: Suspending functions
 **********/
 
 #include <iostream>
+#include <format>
+
+void useCounter(const int val) {
+    std::cout << std::format("counter value: {}\n", val);
+}
+
+auto counter(const int start, const bool reset = false) {
+    static int val = start;
+    
+    if(reset) {
+        val = start;
+    }
+    return val++;
+}
 
 int main() {
+
+    std::cout << std::format("=== using for loop ===\n");
+    for(int i = 0; i < 5; ++i) {
+        useCounter(i);
+    }
+
+    std::cout << std::format("\n=== using static value in function ===\n");
+    for(int i = 0; i < 5; ++i) {
+        useCounter(counter(11));
+    }
+
+    std::cout << std::format("\n=== using static value in function ===\n");
+    for(int i = 0; i < 5; ++i) {
+        useCounter(counter(11, i ? false : true));
+    }
 
 	return 0;
 }

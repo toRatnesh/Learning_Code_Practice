@@ -57,11 +57,14 @@ References
 #include "thsafe_queue.hpp"
 
 class function_wrapper {
+
     struct impl_base {
         virtual void call() = 0;
         virtual ~impl_base() {}
     };
-    std::unique_ptr<impl_base> impl;
+    
+    std::unique_ptr<impl_base> impl{nullptr};
+
     template <typename F>
     struct impl_type : impl_base {
         F f;
@@ -82,7 +85,7 @@ class function_wrapper {
     function_wrapper& operator=(const function_wrapper&) = delete;
 
     template <typename F>
-    function_wrapper(F&& f) : impl(new impl_type<F>(std::move(f))) {}
+    function_wrapper(F&& f) : impl(std::make_unique<impl_type<F>>(std::move(f))) {}
 
     void operator()() { impl->call(); }
 };
@@ -119,16 +122,24 @@ class thread_pool {
         }
     }
 
-    template <typename Func>
+    
+    template <typename Func, typename ...Args>
     //std::future<std::result_of_t<Func()>> submit(Func callable) 
-    std::future<std::invoke_result_t<Func>> submit(Func callable) 
+    std::future<std::invoke_result_t<Func, Args...>> submit(Func callable, Args && ...args) 
     {
         //typedef std::result_of_t<Func()> res_t;
-        using res_t = std::invoke_result_t<Func>;
-        std::packaged_task<res_t()> task(std::move(callable));
+        using res_t = std::invoke_result_t<Func, Args...>;
+        //std::packaged_task<res_t()> task(std::move(callable));
+        //std::packaged_task<res_t()> task(std::bind(std::move(callable), std::move(args)...));
+        std::packaged_task<res_t()> task(
+            [func = std::forward<Func>(callable),
+            ...args = std::forward<Args>(args)]() mutable {
+                return std::invoke(func, std::move(args)...);
+            }
+        );
         std::future<res_t> res(task.get_future());
         //std::packaged_task task(std::move(callable));		// CTAD
-        //std::future res(task.get_future());			// CTAD
+        //std::future res(task.get_future());               // CTAD
         m_queue.push(std::move(task));
         return res;
     }
@@ -173,20 +184,74 @@ T parallel_accumulate(Iterator first, Iterator last, T init) {
     return result;
 }
 
-int main() {
+std::string  display(std::string sval,
+    std::string & sref,
+    const std::string scval,
+    const std::string & scref,
+    std::string && srval
+) 
+{
+    sref += sval + "," + scval + ", " + scref + ", " + srval;
+    return sref;
+}
 
-    const int num_elems = 11;
-    std::vector<int> vec_ints(num_elems);
-    
-    
-    for(int i = 0; i < num_elems; ++i) {
-        vec_ints.emplace_back(i);
+class Data {
+    std::string m_data;
+    public:
+    std::string getData() const {
+        //std::cout << "get-" << m_data << '\n';
+        return m_data;
     }
 
-    auto res = parallel_accumulate(vec_ints.cbegin(), vec_ints.cend(), 0);
-    std::cout << "Result is " <<  res << '\n';
+    void setData(std::string data) {
+        m_data = data;
+        //std::cout << "set-" << m_data << '\n';
+    }
+};
 
-    //std::this_thread::sleep_for(std::chrono::seconds(5));    
+int main() {
+
+    {
+        const int num_elems = 11;
+        std::vector<int> vec_ints(num_elems);
+        
+        
+        for(int i = 0; i < num_elems; ++i) {
+            vec_ints.emplace_back(i);
+        }
+
+        auto res = parallel_accumulate(vec_ints.cbegin(), vec_ints.cend(), 0);
+        std::cout << "Result is " <<  res << '\n';
+
+        //std::this_thread::sleep_for(std::chrono::seconds(5));        
+    }
+
+
+    thread_pool pool;
+    {
+        std::string sval{"string value"};
+        const std::string scval{"const string value"}; 
+        
+        //auto res = pool.submit(&display, sval, std::ref(sref), scval, std::cref(scref), std::string{"rvalue string"});
+        auto res = pool.submit(&display, sval, std::ref(sval), scval, std::cref(scval), std::string{"rvalue string"});
+        std::cout << res.get() << '\n';
+        std::cout << sval << '\n';
+    }
+
+    {
+        Data data;
+        pool.submit(&Data::setData, std::ref(data), "string value");
+
+        auto res1 = pool.submit(&Data::getData, data);
+        std::cout << "Using value: " << res1.get() << '\n';    // EMPTY STRING VALUE IS RETURNED BECAUSE OBJECT IS COPIED
+
+        auto res2 = pool.submit(&Data::getData, &data);
+        std::cout << "Using ref: " << res2.get() << '\n';
+
+        auto res3 = pool.submit(&Data::getData, std::ref(data));
+        std::cout << "Using ref: " << res3.get() << '\n';        
+    }
+
 
     return 0;
 }
