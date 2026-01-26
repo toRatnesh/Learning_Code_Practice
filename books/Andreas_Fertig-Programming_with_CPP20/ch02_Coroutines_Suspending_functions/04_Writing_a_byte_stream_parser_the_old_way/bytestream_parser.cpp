@@ -34,52 +34,92 @@ Chapter 2 | Coroutines: Suspending functions
     There are various ways. Most likely, we tend to create a class to track the state.
 
 
-    template <typename T>
-    void ProcessNextByte(byte b, T&& frameCompleted) {
-        static std::string frame{};
-        static bool inHeader{false};
-        static bool wasESC{false};
-        static bool lookingForSOF{false};
-
-        if (inHeader) {
-            if ((ESC == b) && not wasESC) {
-                wasESC = true;
-                return;
-            } else if (wasESC) {
-                wasESC = false;
-
-                if ((SOF == b) || (ESC != b)) {
-                    // if b is not SOF discard the frame
-                    if (SOF == b) {
-                        frameCompleted(frame);
-                    }
-
-                    frame.clear();
-                    inHeader = false;
-                    return;
-                }
-            }
-
-            frame += static_cast<char>(b);
-
-        } else if ((ESC == b) && !lookingForSOF) {
-            lookingForSOF = true;
-        } else if ((SOF == b) && lookingForSOF) {
-            inHeader = true;
-            lookingForSOF = false;
-        } else {
-            lookingForSOF = false;
-        }
-    }
-
 *******/
 
-#include <coroutine>
-#include <exception>
-#include <utility>
+#include <iostream>
+#include <vector>
+#include <string>
 
-int main() { return 0; }
+using byte_t = std::byte;
+
+const byte_t SOF{0x11};
+const byte_t ESC{'H'};
+
+auto processBytes(byte_t bval, auto && callback) {
+
+    static bool l_in_header{false};
+    static bool l_was_esc{false};
+    static bool l_searching_sof{false};
+
+    static std::string l_frame;
+
+
+    if(l_in_header) {
+
+        if(l_was_esc) {
+            l_was_esc = false;
+
+            if((SOF == bval) || (ESC != bval)) {
+
+                if(SOF == bval) {
+                    callback(l_frame);
+                }
+
+                l_frame.clear();
+                l_in_header = false;
+                return;
+            }
+        }
+        else if((not l_was_esc) && (ESC == bval)) {
+            l_was_esc = true;
+            return;
+        }
+
+        l_frame = l_frame + static_cast<char>(bval);
+
+    }
+    else if((not l_searching_sof) && (ESC == bval)) {
+        l_searching_sof = true;
+    }
+    else if(l_searching_sof && (SOF == bval)) {
+        l_searching_sof = false;
+        l_in_header = true;
+    }
+    else {
+        l_searching_sof = false;
+    }
+
+
+}
+
+int main() { 
+
+    const std::vector<byte_t> fakebytes1{
+        byte_t{0x70}, byte_t{0x24}, ESC,         SOF,         ESC,
+        byte_t{'H'},  byte_t{'e'},  byte_t{'l'}, byte_t{'l'}, byte_t{'o'},
+        ESC,          SOF,          byte_t{0x7}, ESC,         SOF};
+
+    const std::vector<byte_t> fakebytes2{byte_t{'W'}, byte_t{'o'}, byte_t{'r'},
+                                         byte_t{'l'}, byte_t{'d'}, ESC,
+                                         SOF,         byte_t{0x99}};
+
+    auto frameDisplay = [](const std::string& frame) {
+        std::cout << "Frame: " << frame << '\n';
+    };
+
+
+    for(const auto bval : fakebytes1) {
+        processBytes(bval, frameDisplay);
+    }
+
+    for(const auto bval : fakebytes2) {
+        processBytes(bval, frameDisplay);
+    }
+
+    return 0;    
+}
 
 /*****
     END OF FILE
 **********/
+
