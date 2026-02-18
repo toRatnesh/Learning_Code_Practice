@@ -1,5 +1,11 @@
 /*******
 
+References
+
+    Programming with C++20 | Andreas Fertig
+	https://en.cppreference.com/w/cpp/language/coroutines
+
+
 Chapter 2 | Coroutines: Suspending functions
 
 A coroutine is a function that can suspend itself.

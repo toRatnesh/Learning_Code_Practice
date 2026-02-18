@@ -4,19 +4,15 @@ References
 
     Programming with C++20 | Andreas Fertig
 	https://en.cppreference.com/w/cpp/language/coroutines
-
+    https://github.com/andreasfertig/programming-with-cpp20/blob/main/02.25-coroutineParsingDataStreamCustomAllocator1/main.cpp
 
 Chapter 2 | Coroutines: Suspending functions
 
 A coroutine is a function that can suspend itself.
 
-2.7 Using a coroutine with custom new / delete
+2.8 Using a coroutine with a custom allocator
 
-    Even for a PromiseType, the compiler follows the usual rules looking
-    up an operator new in a class before going to the global operator new
-
-    We provide operator new for our PromiseType in, as well an operator delete.
-
+    We can provide an operator new template, which then picks the right allocator.
 
 *******/
 
@@ -26,6 +22,44 @@ A coroutine is a function that can suspend itself.
 #include <format>
 #include <iostream>
 #include <utility>
+
+
+struct arena {
+  void* Allocate(size_t size) noexcept;
+  void  Deallocate(void* p, size_t size) noexcept;
+
+  static arena* GetFromPtr(void* ptr, size_t size);
+};
+
+void* arena::Allocate(size_t sz) noexcept
+{
+  auto osz = sz;
+  sz += sizeof(arena*);
+
+  char* ptr = new char[sz];
+
+  [[maybe_unused]] arena* a =
+    reinterpret_cast<arena*>(ptr + osz);
+
+  a = this;
+
+  arena* b = reinterpret_cast<arena*>(ptr + osz);
+
+  printf("custom alloc %zu  %p  %p  %p\n", osz, ptr, this, b);
+
+  return ptr;
+}
+
+arena* arena::GetFromPtr(void* ptr, size_t sz)
+{
+  return reinterpret_cast<arena*>(static_cast<char*>(ptr) + sz);
+}
+
+void arena::Deallocate(void* ptr, size_t sz) noexcept
+{
+  printf("custom dealloc %zu  %p  %p\n", sz, ptr, this);
+  delete[] static_cast<char*>(ptr);
+}
 
 namespace coro_iterator {
 
@@ -80,10 +114,13 @@ struct promise_type_base {
     void return_void() {}
     void unhandled_exception() { std::terminate(); }
 
-    void* operator new(size_t msize) noexcept { return myAllocate(msize); }
+    template<typename ...Args>
+    void* operator new(size_t msize, arena & memalloc, Args&&...) noexcept { 
+        return memalloc.Allocate(msize); 
+    }
 
     void operator delete(void* ptr, size_t msize) noexcept {
-        return myDeallocate(ptr, msize);
+        arena::GetFromPtr(ptr, msize)->Deallocate(ptr, msize);
     }
 };
 
@@ -123,7 +160,7 @@ class generator {
 
 using int_generator = generator<int>;
 
-int_generator counter(const int start, const int end) {
+int_generator counter(arena &, const int start, const int end) {
     int val{start};
 
     while (val < end) {
@@ -133,8 +170,9 @@ int_generator counter(const int start, const int end) {
 }
 
 int main() {
-    
-    auto cg = counter(0, 10);
+
+    arena memarena{};
+    auto cg = counter(memarena, 0, 10);
 
     for (auto c : cg) {
         std::cout << std::format("counter value: {}\n", c);
