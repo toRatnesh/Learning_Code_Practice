@@ -1,12 +1,24 @@
 /*****
 
-References
-    episode:    https://www.youtube.com/watch?v=nLjrMcjsa0Y
+ep511_move(obj).fun()_vs_move(obj.fun())
+
+References:
+    episode     https://www.youtube.com/watch?v=nLjrMcjsa0Y
+    https://en.cppreference.com/w/cpp/utility/move.html
+
+std::move
+    std::move is used to indicate that an object t may be "moved from", 
+    i.e. allowing the efficient transfer of resources from t to another object.
+    
+    In particular, std::move produces an xvalue expression that identifies its argument t.
+    It is exactly equivalent to a static_cast to an rvalue reference type.
 
 move(obj).fun()
-    obj is moved to fun i.e. obj ownership is transferred
+    calls member function fun() on an rvalue qualified object i.e. calls an && qualified member function if it exists
+
+
 move(obj.fun())
-    return vaulue of fun is moved i.e. return value of fun has new owner
+    casts return value of member function fun() to an rvalue
 
 **********/
 

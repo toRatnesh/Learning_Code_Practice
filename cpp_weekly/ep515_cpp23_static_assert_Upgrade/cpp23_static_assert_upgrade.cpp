@@ -4,7 +4,7 @@ References
     episode:    https://www.youtube.com/watch?v=pwf45vaXm3Q
     https://en.cppreference.com/w/cpp/language/static_assert.html
 
-    C++23 change
+C++23 change
     "allow static_assert of non-value-dependent expressions in a template context"
     but retroactive!
     not C++ version dependent, compiler dependent
@@ -59,7 +59,7 @@ int main()
             //std::cout << val << '\n';
         }
 
-        }
+    }
 
     {
         {
