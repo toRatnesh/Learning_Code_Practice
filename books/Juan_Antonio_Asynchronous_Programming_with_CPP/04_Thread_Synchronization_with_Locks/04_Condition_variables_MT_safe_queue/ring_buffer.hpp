@@ -2,6 +2,7 @@
 
 References
     Juan Antonio Rufes - Asynchronous Programming with C++
+    https://en.cppreference.com/w/cpp/thread/condition_variable.html
 
 
 Thread Safe Ring Buffer:
@@ -11,7 +12,6 @@ Thread Safe Ring Buffer:
 
 #include <vector>
 #include <mutex>
-#include <thread>
 #include <condition_variable>
 
 template <typename T, std::size_t CAPACITY = 1>

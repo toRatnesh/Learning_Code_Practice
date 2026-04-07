@@ -2,6 +2,7 @@
 
 References
     Juan Antonio Rufes - Asynchronous Programming with C++
+    https://en.cppreference.com/w/cpp/thread/condition_variable.html
 
 
 Thread Safe Ring Buffer:
@@ -13,10 +14,11 @@ Thread Safe Ring Buffer:
 #include <string>
 #include <atomic>
 #include <chrono>
+#include <thread>
 
 #include "ring_buffer.hpp"
 
-RingBuffer<std::string, 80> rbuffer;
+RingBuffer<std::string, 1024> rbuffer;
 std::atomic_uint32_t    consumed_count{0};
 std::atomic_uint32_t    produced_count{0};
 
@@ -46,7 +48,7 @@ void consumer(const std::size_t data_size)
 int main()
 {
 
-    const std::size_t iter_count{100};
+    const std::size_t iter_count{1024};
 
     std::thread pth(producer, iter_count);
     std::this_thread::sleep_for(std::chrono::seconds(1));

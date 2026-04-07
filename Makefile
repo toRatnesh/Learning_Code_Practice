@@ -5,7 +5,13 @@ else ifndef STD
 $(error Usage: make SRC=<src_filename> STD=<version>)
 endif
 
-CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=undefined,address,leak -fno-omit-frame-pointer -fsanitize-address-use-after-scope
+#if WITH_THREAD
+
+	CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=undefined,address,leak -fno-omit-frame-pointer -fsanitize-address-use-after-scope
+#elif
+	CC      = g++ -Wall -Wextra -Wpedantic -Wconversion -fsanitize=undefined,address,leak -fno-omit-frame-pointer -fsanitize-address-use-after-scope -pthread
+#endif
+	
 
 ifeq ($(STD), 11)
 	CC += -std=c++11
