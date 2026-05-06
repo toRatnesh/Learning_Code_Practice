@@ -1,4 +1,46 @@
 
+Atomic operations can be used in the following cases:
+
+- If multiple threads share a mutable state
+- If synchronized access to shared state is fine-grained
+- To improve performance
+
+Atomic operations must be provided by the CPU.
+
+Locks can be used in the following cases:
+
+- If the protected data is not fine-grained
+- If performance is not an issue
+- To avoid the need to acquire low-level knowledge
+
+
+
+# blocking data structures
+
+Data structures synchronized with locks are called blocking data structures because threads are blocked (by the operating system), waiting until the locks become available.
+
+
+# non-blocking data structures
+
+Data structures that don’t use locks are called non-blocking data structures. Most (but not all) of them are lock-free.
+
+A data structure or algorithm is considered lock-free if each synchronized action completes in a finite number of steps, not allowing indefinite waiting for a condition to become true or false.
+
+
+Types of lock-free data structures:
+
+- Obstruction-free
+- Lock-free
+- Wait-free
+
+
+Reasons to use lock-free data structures are the following:
+
+- Achieving maximum concurrency
+- No deadlocks
+- Performance
+
+
 # Atomicity
 
 Atomicity is the property that guarantees an operation is executed as a single, indivisible step. In other words, no other thread can observe the operation in a partially completed state.
@@ -83,4 +125,10 @@ Use it when:
 - debugging or prototyping
 
 *It is also the default ordering in C++.*
+
+# References
+
+Asynchronous Programming with C++ | Juan Antonio Rufes
+https://en.cppreference.com/cpp/atomic/memory_order
+https://www.linkedin.com/pulse/beyond-atomicity-understanding-visibility-ordering-c-michel-tonetti-aaqwe/
 
