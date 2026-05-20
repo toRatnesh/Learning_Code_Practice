@@ -98,11 +98,6 @@ struct coro_return_t {
     }
 };
 
-coro_return_t<char, int> coro_fun() {
-    auto val = co_await char{};
-    co_yield static_cast<int>(val);
-}
-
 coro_return_t<char, int> parse_string() {
     while (true) {
         char c = co_await char{};
