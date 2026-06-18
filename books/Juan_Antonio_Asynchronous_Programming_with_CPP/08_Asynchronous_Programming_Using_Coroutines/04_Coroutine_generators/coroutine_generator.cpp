@@ -25,8 +25,73 @@ C++23 std::generator
 
 #include <print>
 #include <generator>
+#include <iostream>
 
-std::generator<int> fibonacci_generator() {
+
+namespace nonstd {
+
+    struct generator {
+
+        struct promise_type {
+            int out_data{};
+
+            generator get_return_object() noexcept {
+                return generator{*this};
+            }
+
+
+            auto yield_value(int data) noexcept {
+                out_data = data;
+                return std::suspend_always{};
+            }
+
+            auto initial_suspend() noexcept {
+                return std::suspend_always{};
+            }
+
+            auto final_suspend() noexcept {
+                return std::suspend_always{};
+            }
+
+            auto unhandled_exception() noexcept {
+                std::println("Inside {}", __func__);
+            }
+
+            auto return_void() noexcept {
+                std::println("Inside {}", __func__);
+            }
+
+        };
+
+        std::coroutine_handle<promise_type>     handle{};
+
+        explicit generator(promise_type & prom) : 
+            handle{std::coroutine_handle<promise_type>::from_promise(prom)} 
+        {
+            //std::println("Inside {}", __func__);
+        }  
+
+        ~generator() {
+            //std::println("Inside {}", __func__);
+
+            if(handle) {
+                handle.destroy();
+            }
+        }    
+
+        auto next_value() {
+            if(not handle.done()) {
+                handle.resume();
+            }
+            return handle.promise().out_data;
+        }
+    };
+
+
+}
+
+std::generator<int> std_fibonacci_generator()
+{
     
     int a{0};
     int b{1};
@@ -39,18 +104,50 @@ std::generator<int> fibonacci_generator() {
     }
 }
 
+nonstd::generator fibonacci_generator()
+{
+    int a{0};
+    int b{1};
+
+    while(true) {
+        co_yield a;
+        int c = a + b;
+        a = b;
+        b = c;
+    }
+}
+
 int main() {
-
-    auto fib_gen = fibonacci_generator();
-
-    for(auto it = fib_gen.begin(); it != fib_gen.end(); ++it) {
+    {
+        std::println("=== using std::generator ===");
         
-        if((*it) > 100) {
-            std::println();
-            break;
-        }
+        auto fib_gen = std_fibonacci_generator();
 
-        std::print("{}, ", *it);
+        for(auto it = fib_gen.begin(); it != fib_gen.end(); ++it) {
+            
+            if((*it) > 100) {
+                std::println();
+                break;
+            }
+
+            std::print("{}, ", *it);
+        }
+    }
+
+    {
+        std::println("=== using custom generator ===");
+
+        auto fib_gen = fibonacci_generator();
+
+        while(true) {
+            auto val = fib_gen.next_value();
+            if(val > 100) {
+                std::println();
+                break;
+            }
+
+            std::print("{}, ", val);
+        }
     }
 
     return 0;
@@ -59,6 +156,4 @@ int main() {
 /*****
     END OF FILE
 **********/
-
-
 
