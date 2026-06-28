@@ -1,3 +1,14 @@
+/*******
+
+References
+    Asynchronous Programming with C++ | Javier Reguera-Salgado & Juan Antonio Rufes
+
+
+    This example demonstrates use of atomic type for one time lazy initialization.
+    To ensure the object is initialized only once, we will utilize a method known as lazy one-time initialization.
+
+**********/
+
 #include <atomic>
 #include <iostream>
 #include <vector>
@@ -37,3 +48,6 @@ int main() {
 }
 
 
+/*****
+    END OF FILE
+**********/

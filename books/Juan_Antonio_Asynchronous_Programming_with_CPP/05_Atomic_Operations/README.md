@@ -128,7 +128,7 @@ Use it when:
 
 # References
 
-Asynchronous Programming with C++ | Juan Antonio Rufes
+Asynchronous Programming with C++ | Javier Reguera-Salgado & Juan Antonio Rufes
 https://en.cppreference.com/cpp/atomic/memory_order
 https://www.linkedin.com/pulse/beyond-atomicity-understanding-visibility-ordering-c-michel-tonetti-aaqwe/
 

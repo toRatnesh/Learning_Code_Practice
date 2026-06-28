@@ -1,9 +1,11 @@
 /*****
 
 References
-    Asynchronous Programming with C++ | Juan Antonio Rufes
+    Asynchronous Programming with C++ | Javier Reguera-Salgado & Juan Antonio Rufes
     https://www.boost.org/doc/libs/latest/doc/html/boost_asio/reference/io_context.html
     https://www.boost.org/doc/libs/latest/doc/html/boost_asio.html
+
+    Code https://godbolt.org/z/6sscv3zr7
     
 Chapter 9 | Asynchronous Programming Using Boost.Asio
 

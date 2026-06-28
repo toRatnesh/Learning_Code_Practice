@@ -1,7 +1,7 @@
 /*******
 
 References
-    Juan Antonio Rufes - Asynchronous Programming with C++
+    Asynchronous Programming with C++ | Javier Reguera-Salgado & Juan Antonio Rufes
     https://en.cppreference.com/cpp/thread/jthread
     https://en.cppreference.com/cpp/thread/stop_source
     https://en.cppreference.com/cpp/thread/stop_token

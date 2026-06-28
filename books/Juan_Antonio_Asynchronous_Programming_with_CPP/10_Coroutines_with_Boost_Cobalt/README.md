@@ -149,7 +149,8 @@ The gather function returns a tuple of optional values, and we need to check whe
 
 # References
 
+Asynchronous Programming with C++ | Javier Reguera-Salgado & Juan Antonio Rufes
 https://www.boost.org/doc/libs/latest/libs/cobalt/doc/html/index.html
 
-Asynchronous Programming with C++ | Javier Reguera-Salgado & Juan Antonio Rufes
+
 

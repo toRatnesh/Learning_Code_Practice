@@ -1,9 +1,9 @@
 /*******
 
 References
-    Juan Antonio Rufes - Asynchronous Programming with C++
+    Asynchronous Programming with C++ | Javier Reguera-Salgado & Juan Antonio Rufes
     https://en.cppreference.com/w/cpp/thread/latch.html
-
+    https://david.alvarezrosa.com/posts/optimizing-a-lock-free-ring-buffer/#single-threaded-ring-buffer
 
 **********/
 

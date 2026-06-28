@@ -1,7 +1,7 @@
 /*****
 
 References
-    Asynchronous Programming with C++ | Juan Antonio Rufes
+    Asynchronous Programming with C++ | Javier Reguera-Salgado & Juan Antonio Rufes
     https://en.cppreference.com/cpp/coroutine
     https://en.cppreference.com/cpp/language/coroutines
     https://en.cppreference.com/cpp/coroutine/generator
