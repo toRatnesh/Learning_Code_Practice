@@ -5,6 +5,8 @@ References
 	episode https://www.youtube.com/watch?v=AIKAOWs213o
 	https://en.cppreference.com/w/cpp/language/structured_binding
 	
+	code https://godbolt.org/z/hbvWff93o
+
 	Binds the specified names to subobjects or elements of the initializer.
 	
 	Like a reference, a structured binding is an alias to an existing object.

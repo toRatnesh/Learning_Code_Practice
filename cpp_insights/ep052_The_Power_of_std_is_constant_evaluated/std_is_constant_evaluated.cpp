@@ -1,11 +1,11 @@
 /*****
 
-ep052_The_Power_of_std_is_constant_evaluated
-
 References
     episode https://www.youtube.com/watch?v=S4Zv0Qh20vY
     https://en.cppreference.com/w/cpp/types/is_constant_evaluated
 
+    code https://godbolt.org/z/rbY6z6MMr
+    
 **********/
 
 #include <print>

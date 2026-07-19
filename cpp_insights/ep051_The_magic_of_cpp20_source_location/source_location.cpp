@@ -1,19 +1,21 @@
 /*****
 
-ep051_The_magic_of_cpp20_source_location
-
 References
-episode https://www.youtube.com/watch?v=rYI4guK7D_8
-https://en.cppreference.com/w/cpp/utility/source_location
+    episode https://www.youtube.com/watch?v=rYI4guK7D_8
+    https://en.cppreference.com/w/cpp/utility/source_location
+    C++ insights episode 70
 
-std::source_location class represents certain information about 
-the source code, such as file names, line numbers, and function names
+    code https://godbolt.org/z/M3Peo8nr9
 
-Field access
-line			return the line number represented by this object
-column			return the column number represented by this object
-file_name		return the file name represented by this object
-function_name	return the name of the function represented by this object, if any
+std::source_location    
+    std::source_location class represents certain information about 
+    the source code, such as file names, line numbers, and function names
+
+    Field access
+    line			return the line number represented by this object
+    column			return the column number represented by this object
+    file_name		return the file name represented by this object
+    function_name	return the name of the function represented by this object, if any
 
 **********/
 

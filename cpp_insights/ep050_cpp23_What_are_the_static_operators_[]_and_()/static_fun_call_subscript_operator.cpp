@@ -1,14 +1,14 @@
 /*****
 
-ep050_cpp23_What_are_the_static_operators_[]_and_() 
-
 References
-episode https://www.youtube.com/watch?v=hbg1HwUUmw4
+    episode https://www.youtube.com/watch?v=hbg1HwUUmw4
 
-This example demonstrates about C++23 stattic operator () and []
-When used this does not reuqire this pointer
+    code https://godbolt.org/z/xqzdM61oq
 
-These are useful in case of lambda without capture or when you write your own callale or closure
+    This example demonstrates about C++23 stattic operator () and []
+    When used this does not reuqire this pointer
+
+    These are useful in case of lambda without capture or when you write your own callale or closure
 
 **********/
 

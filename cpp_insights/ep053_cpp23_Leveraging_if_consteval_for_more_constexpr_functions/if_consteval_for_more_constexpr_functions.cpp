@@ -1,11 +1,11 @@
 /*****
 
-ep053_cpp23_Leveraging_if_consteval_for_more_constexpr_functions
-
 References
     episode https://www.youtube.com/watch?v=5cFyn5b0f4w
     https://en.cppreference.com/w/cpp/types/is_constant_evaluated
     https://en.cppreference.com/w/cpp/language/if
+
+    code https://godbolt.org/z/v9sb43Gos
 
 **********/
 
