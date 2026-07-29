@@ -15,11 +15,13 @@ References
 #include <cassert>
 #include <chrono>
 
-template <typename T>
+template <typename T, std::size_t capacity>
 class spsc_lock_free_queue
 {
+    static_assert((capacity >= 2), "capacity must be at least 2");
+    static_assert((capacity & (capacity - 1)) == 0, "capacity must be power of 2");
 
-    const std::size_t m_capacity;
+    static constexpr std::size_t m_mask{capacity - 1};
 
     std::size_t m_cache_windex{0};
     std::size_t m_cache_rindex{0};
@@ -30,22 +32,20 @@ class spsc_lock_free_queue
     std::vector<T> m_data;
 
 public:
-    explicit spsc_lock_free_queue(const std::size_t capacity) : m_capacity{capacity}, m_data(m_capacity)
+    spsc_lock_free_queue() : m_data(capacity)
     {
     }
 
     spsc_lock_free_queue(const spsc_lock_free_queue &) = delete;
     spsc_lock_free_queue &operator=(const spsc_lock_free_queue &) = delete;
 
-    std::size_t next(const std::size_t index) const
+    static std::size_t next(const std::size_t index)
     {
-        return (index + 1) % m_capacity;
+        return (index + 1) & m_mask;
     }
 
     bool tryPush(const T &data)
     {
-        bool l_ret{false};
-
         const auto l_windex = m_windex.load(std::memory_order_relaxed);
         const auto l_next_windex = next(l_windex);
 
@@ -59,19 +59,15 @@ public:
                 return false;
             }
         }
-        else
-        {
-            m_data[l_windex] = data;
-            m_windex.store(l_next_windex, std::memory_order_release);
-            l_ret = true;
-        }
 
-        return l_ret;
+        m_data[l_windex] = data;
+        m_windex.store(l_next_windex, std::memory_order_release);
+
+        return true;
     }
 
     bool tryPop(T &data)
     {
-        bool l_ret{false};
         const std::size_t l_rindex = m_rindex.load(std::memory_order_relaxed);
 
         if (l_rindex == m_cache_windex)
@@ -80,19 +76,15 @@ public:
             if (l_rindex == m_cache_windex)
             {
                 // queue is empty
-                return l_ret;
+                return false;
             }
         }
-        else
-        {
-            data = m_data[l_rindex];
-            const std::size_t l_next_rindex = next(l_rindex);
-            m_rindex.store(l_next_rindex, std::memory_order_release);
+        
+        
+        data = std::move(m_data[l_rindex]);
+        m_rindex.store(next(l_rindex), std::memory_order_release);
 
-            l_ret = true;
-        }
-
-        return l_ret;
+        return true;
     }
 };
 
@@ -101,21 +93,23 @@ struct Data
     std::string data;
 };
 
-constexpr std::size_t qsize{1024 * 1024};
-spsc_lock_free_queue<Data> shared_queue{qsize};
+constexpr std::size_t qsize{1024};
+spsc_lock_free_queue<Data, qsize> shared_queue{};
+
+constexpr std::size_t elem_cnt{1024 * 3};
 
 void producer()
 {
-
     std::size_t push_cnt{0};
 
-    for (std::size_t i = 0; i < qsize; ++i)
+    for (std::size_t i = 0; i < elem_cnt; ++i)
     {
-        if (shared_queue.tryPush(Data{std::string("data-") + std::to_string(i)}))
+        while (not shared_queue.tryPush(Data{std::string("data-") + std::to_string(i)}))
         // if (shared_queue.tryPush(i))
         {
-            ++push_cnt;
+            std::this_thread::yield();
         }
+        ++push_cnt;
     }
 
     std::cout << "Push count: " << push_cnt << '\n';
@@ -126,13 +120,14 @@ void consumer()
 
     std::size_t pop_cnt{0};
 
-    for (std::size_t i = 0; i < qsize; ++i)
+    for (std::size_t i = 0; i < elem_cnt; ++i)
     {
         Data l_data;
-        if (shared_queue.tryPop(l_data))
+        while (not shared_queue.tryPop(l_data))
         {
-            ++pop_cnt;
+            std::this_thread::yield();
         }
+        ++pop_cnt;
     }
 
     std::cout << "Pop count: " << pop_cnt << '\n';
@@ -141,7 +136,7 @@ void consumer()
 int main()
 {
     std::jthread l_pth(&producer);
-    std::this_thread::sleep_for(std::chrono::nanoseconds(100));
+    //std::this_thread::sleep_for(std::chrono::nanoseconds(100));
     std::jthread l_cth(&consumer);
 
     return 0;
